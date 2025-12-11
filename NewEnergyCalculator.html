@@ -1,0 +1,3920 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Energie-Investitionsrechner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg-primary: #000000;
+            --bg-secondary: #0d0d0d;
+            --bg-tertiary: #1a1a1a;
+            --magenta-500: #ff2d92;
+            --magenta-600: #e6298a;
+            --magenta-700: #cc2577;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #6b6b7b;
+            --success: #30d158;
+            --warning: #ff9f0a;
+            --danger: #ff453a;
+            --radius-sm: 16px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --radius-xl: 36px;
+            --shadow-glow: 0 0 60px rgba(255, 45, 146, 0.15);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        [data-theme="1k5"] {
+            --bg-primary: #0f0725;
+            --bg-secondary: #1a0b3d;
+            --bg-tertiary: #2d1b69;
+            --magenta-500: #ff2d92;
+            --magenta-600: #e6298a;
+            --magenta-700: #cc2577;
+            --cyan-500: #00d9ff;
+            --cyan-600: #00c4e6;
+            --text-primary: #ffffff;
+            --text-secondary: #c7d0e0;
+            --text-muted: #9095b8;
+            --success: #00d9ff;
+            --warning: #ff9500;
+            --danger: #ff453a;
+            --shadow-glow: 0 0 60px rgba(0, 217, 255, 0.2);
+            --shadow-card: 0 8px 32px rgba(15, 7, 37, 0.9);
+        }
+        
+        [data-theme="1k5"] body::before {
+            background: radial-gradient(circle at 70% 20%, rgba(0, 217, 255, 0.15) 0%, rgba(255, 45, 146, 0.08) 40%, transparent 70%);
+        }
+        
+        [data-theme="1k5"] .header-logo {
+            background: linear-gradient(135deg, var(--cyan-500), var(--magenta-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.4));
+        }
+        
+        [data-theme="1k5"] .button-primary {
+            background: linear-gradient(135deg, var(--cyan-500), var(--magenta-500));
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+        }
+        
+        [data-theme="1k5"] .button-primary:hover {
+            box-shadow: 0 6px 30px rgba(0, 217, 255, 0.5);
+        }
+        
+        [data-theme="1k5"] .stat-card {
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+        
+        [data-theme="1k5"] .result-box {
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            box-shadow: 0 8px 40px rgba(0, 217, 255, 0.1);
+        }
+        
+        /* 1K5 Mode Cyan Styles for ALL Input Fields */
+        [data-theme="1k5"] .input-field {
+            background: rgba(0, 217, 255, 0.03);
+            border-color: rgba(0, 217, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] .input-field:focus {
+            border-color: var(--cyan-500);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+        
+        [data-theme="1k5"] .expandable-header {
+            background: rgba(0, 217, 255, 0.03);
+            border-color: rgba(0, 217, 255, 0.1);
+        }
+        
+        [data-theme="1k5"] .expandable-header:hover {
+            background: rgba(0, 217, 255, 0.06);
+            border-color: rgba(0, 217, 255, 0.2);
+        }
+        
+        [data-theme="1k5"] .info-box {
+            background: rgba(0, 217, 255, 0.03);
+            border: 1px solid rgba(0, 217, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] .toggle-switch.active {
+            background: linear-gradient(135deg, var(--cyan-500), var(--magenta-500));
+        }
+        
+        [data-theme="1k5"] .radio-label {
+            background: rgba(0, 217, 255, 0.03);
+            border-color: rgba(0, 217, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] .radio-label:hover {
+            background: rgba(0, 217, 255, 0.06);
+            border-color: rgba(0, 217, 255, 0.25);
+        }
+        
+        [data-theme="1k5"] .radio-label.checked {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: var(--cyan-500);
+        }
+        
+        /* 1K5 Mode Cyan Styles for Button Groups (like radio-label) */
+        [data-theme="1k5"] #financing-content .btn-group .btn {
+            background: rgba(0, 217, 255, 0.03);
+            border-color: rgba(0, 217, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] #financing-content .btn-group .btn::before {
+            display: none; /* Disable gradient overlay */
+        }
+        
+        [data-theme="1k5"] #financing-content .btn-group .btn:hover {
+            background: rgba(0, 217, 255, 0.06);
+            border-color: rgba(0, 217, 255, 0.25);
+        }
+        
+        [data-theme="1k5"] #financing-content .btn-group .btn.active {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: var(--cyan-500);
+        }
+        
+        /* 1K5 Mode: Override button gradient to use Cyan instead of Magenta */
+        [data-theme="1k5"] .btn::before {
+            background: linear-gradient(135deg, var(--cyan-500) 0%, var(--cyan-600) 100%);
+        }
+        
+        [data-theme="1k5"] .btn:hover {
+            border-color: rgba(0, 217, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.2);
+        }
+        
+        [data-theme="1k5"] .positive {
+            color: var(--cyan-500);
+        }
+        
+        /* Dark Mode Magenta Styles for Radio Labels (Aktueller Energieträger) */
+        body:not([data-theme="1k5"]) .radio-label {
+            background: rgba(255, 45, 146, 0.03);
+            border-color: rgba(255, 45, 146, 0.15);
+        }
+        
+        body:not([data-theme="1k5"]) .radio-label:hover {
+            background: rgba(255, 45, 146, 0.06);
+            border-color: rgba(255, 45, 146, 0.25);
+        }
+        
+        body:not([data-theme="1k5"]) .radio-label.checked {
+            background: rgba(255, 45, 146, 0.1);
+            border-color: var(--magenta-500);
+        }
+        
+        /* Dark Mode Magenta Styles for Button Groups (like radio-label) */
+        body:not([data-theme="1k5"]) #financing-content .btn-group .btn {
+            background: rgba(255, 45, 146, 0.03);
+            border-color: rgba(255, 45, 146, 0.15);
+        }
+        
+        body:not([data-theme="1k5"]) #financing-content .btn-group .btn::before {
+            display: none; /* Disable gradient overlay */
+        }
+        
+        body:not([data-theme="1k5"]) #financing-content .btn-group .btn:hover {
+            background: rgba(255, 45, 146, 0.06);
+            border-color: rgba(255, 45, 146, 0.25);
+        }
+        
+        body:not([data-theme="1k5"]) #financing-content .btn-group .btn.active {
+            background: rgba(255, 45, 146, 0.1);
+            border-color: var(--magenta-500);
+        }
+        
+        [data-theme="1k5"] .button-primary:hover {
+            background: linear-gradient(135deg, var(--cyan-600), var(--magenta-600));
+            box-shadow: 0 8px 32px rgba(0, 217, 255, 0.3);
+        }
+        
+        [data-theme="1k5"] .result-box {
+            border: 2px solid var(--cyan-500);
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] .result-box-secondary {
+            border: 2px solid var(--magenta-500);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] .positive {
+            color: var(--cyan-500);
+        }
+        
+        [data-theme="1k5"] .expandable-header {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(255, 0, 255, 0.05));
+        }
+        
+        [data-theme="1k5"] .expandable-header:hover {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.08), rgba(255, 0, 255, 0.08));
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html {
+            color-scheme: dark;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color-scheme: dark;
+            overscroll-behavior-y: none;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -10%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(255, 45, 146, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 32px 120px;
+            padding-left: max(32px, env(safe-area-inset-left));
+            padding-right: max(32px, env(safe-area-inset-right));
+        }
+        @media (min-width: 768px) {
+            .container { padding: 80px 48px 140px; }
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease-out;
+        }
+        .header h1 {
+            font-size: clamp(36px, 6vw, 56px);
+            font-weight: 800;
+            color: var(--magenta-500);
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        .header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .header-btn {
+            padding: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            color: var(--text-secondary);
+        }
+        .header-btn:hover {
+            background: rgba(255, 45, 146, 0.1);
+            border-color: rgba(255, 45, 146, 0.3);
+            color: var(--magenta-500);
+        }
+        .header-btn svg { width: 20px; height: 20px; }
+        .glass-card {
+            background: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 45, 146, 0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow), var(--shadow-card);
+        }
+        @media (max-width: 768px) { .glass-card { padding: 28px; } }
+        
+        .section-header {
+            margin-bottom: 36px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .section-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+        .grid { display: grid; gap: 24px; }
+        .grid-2 { grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+        .grid-3 { grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+        .input-group { margin-bottom: 28px; }
+        .input-group:last-child { margin-bottom: 0; }
+        .input-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .input-help {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .input-field {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 17px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            transition: var(--transition-fast);
+            font-family: 'Inter', sans-serif;
+        }
+        .input-field::placeholder { color: var(--text-muted); font-weight: 400; }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--magenta-500);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 4px rgba(255, 45, 146, 0.08);
+            transform: translateY(-2px);
+        }
+        .input-field:disabled {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+        .input-with-scenario {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .input-with-scenario .input-field {
+            flex: 1;
+        }
+        .scenario-inline {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            color: var(--warning);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .scenario-inline.visible {
+            display: flex;
+        }
+        .scenario-inline .arrow {
+            font-size: 18px;
+        }
+        .btn {
+            position: relative;
+            padding: 16px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-align: center;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: -1;
+        }
+        .btn:hover {
+            border-color: rgba(255, 45, 146, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(255, 45, 146, 0.2);
+        }
+        .btn.active {
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 8px 24px rgba(255, 45, 146, 0.3);
+        }
+        .btn.active::before { opacity: 1; }
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            border: none;
+            color: white;
+            font-weight: 700;
+            border-radius: var(--radius-md); /* Abgerundet */
+            box-shadow: 
+                0 8px 24px rgba(255, 45, 146, 0.25),
+                0 4px 12px rgba(255, 45, 146, 0.15),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2); /* Glanz */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 
+                0 16px 40px rgba(255, 45, 146, 0.4),
+                0 8px 20px rgba(255, 45, 146, 0.25),
+                inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, 
+                #ff3d9a 0%, 
+                #e91e7a 100%
+            );
+        }
+        .btn-primary:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            transition: var(--transition-fast);
+        }
+        .toggle-row:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .toggle-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .toggle-switch {
+            position: relative;
+            width: 54px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .toggle-switch.active {
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(255, 45, 146, 0.3);
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .toggle-switch.active::after { transform: translateX(22px); }
+        .result-box {
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-card);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .result-box-secondary {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .result-box-content {
+            display: block;
+        }
+        .result-box-left { width: 100%; }
+        .result-box-right {
+            text-align: center;
+            min-width: 200px;
+            padding: 0 24px;
+        }
+        .result-box-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
+        }
+        .result-box-details { margin-bottom: 16px; }
+        .result-detail-row {
+            display: flex;
+            justify-content: flex-start;
+            gap: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4px 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .result-detail-row.indent {
+            padding-left: 16px;
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            margin-left: 8px;
+        }
+        .result-detail-row .text-bold {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .result-detail-row .text-warning { color: #f97316; }
+        .expandable-trigger { cursor: pointer; transition: var(--transition-fast); }
+        .expandable-trigger:hover { color: rgba(255, 255, 255, 0.9); }
+        
+        #monthlyCashFlowSection .expandable-trigger:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        .expand-icon {
+            font-size: 10px;
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+        .expand-icon.open { transform: rotate(180deg); }
+        .result-detail-breakdown { margin-top: 8px; margin-bottom: 8px; }
+        .result-box-value {
+            font-size: clamp(24px, 4.5vw, 32px);
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .result-box-value-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+        }
+        .result-box-value-container .scenario-arrow { 
+            font-size: 20px; 
+            line-height: 1;
+        }
+        .result-box-value-container .scenario-value-secondary {
+            font-size: clamp(28px, 5vw, 38px);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .result-scenario {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .scenario-arrow {
+            font-size: 20px;
+            color: white;
+            line-height: 1;
+        }
+        .result-box-rendite-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0;
+            text-align: center;
+        }
+        .result-box-rendite-value {
+            font-size: clamp(24px, 4.5vw, 32px);
+            font-weight: 800;
+            color: var(--success);
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .result-box-rendite-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+        }
+        .result-box-rendite-container .result-scenario {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-box-rendite-container .scenario-arrow { 
+            font-size: 20px;
+            line-height: 1;
+        }
+        .result-box-rendite-container .scenario-value-secondary {
+            font-size: clamp(28px, 5vw, 38px);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .scenario-value-secondary {
+            color: var(--warning);
+            font-weight: 700;
+        }
+        @media (max-width: 768px) {
+            .result-box-content { display: block; }
+            .result-box-left { width: 100%; }
+            /* Stack grid columns on mobile */
+            .result-box-left > div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+            /* Optimize font sizes for mobile readability */
+            .result-box-title {
+                font-size: 16px !important;
+            }
+            .result-box-value {
+                font-size: clamp(22px, 6vw, 30px) !important;
+            }
+            .result-box-rendite-value {
+                font-size: clamp(22px, 6vw, 30px) !important;
+            }
+            .result-box-value-container .scenario-value-secondary,
+            .result-box-rendite-container .scenario-value-secondary {
+                font-size: clamp(26px, 7vw, 34px) !important;
+            }
+            /* Improve touch targets */
+            .button-primary,
+            .button-secondary {
+                min-height: 48px;
+                padding: 14px 24px !important;
+            }
+            /* Optimize spacing */
+            .glass-card {
+                padding: 24px !important;
+                margin-bottom: 20px !important;
+            }
+            /* Make input fields more touch-friendly */
+            .input-field,
+            .input-select {
+                min-height: 48px;
+                font-size: 16px !important; /* Prevents zoom on iOS */
+            }
+            /* Optimize expandable sections */
+            .expandable-header {
+                padding: 16px !important;
+            }
+            /* Better spacing for savings display */
+            .savings-highlight-amount {
+                font-size: 20px !important;
+            }
+        }
+        .chart-container {
+            background: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-lg);
+            padding: 40px 40px 60px 40px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-card);
+            height: 480px;
+        }
+        .chart-header {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .chart-container { 
+                padding: 20px 16px 40px 16px; 
+                height: 360px;
+                margin-bottom: 24px;
+            }
+            .chart-header {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            #chart {
+                height: calc(100% - 50px) !important;
+            }
+        }
+        
+        /* Extra small screens optimization */
+        @media (max-width: 480px) {
+            .chart-container {
+                padding: 16px 12px 32px 12px;
+                height: 320px;
+            }
+            .chart-header {
+                font-size: 16px;
+                margin-bottom: 16px;
+            }
+            #chart {
+                height: calc(100% - 45px) !important; /* Less space for header+legend */
+            }
+            /* Prevent chart overflow on very small screens */
+            .container {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+            /* Optimize touch targets for small screens */
+            .btn-group button {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            /* Stack all grids on very small screens */
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        
+        /* Extra extra small screens - further optimize */
+        @media (max-width: 380px) {
+            .chart-container {
+                padding: 14px 10px 28px 10px;
+                height: 300px;
+            }
+            .chart-header {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+            #chart {
+                height: calc(100% - 42px) !important; /* Tighter spacing */
+            }
+        }
+        
+        /* Extra small screens - optimize chart legend to prevent wrapping */
+        @media (max-width: 360px) {
+            .chart-container {
+                padding: 12px 8px 24px 8px;
+                height: 280px; /* Reduced height for smaller screens */
+            }
+            .chart-header {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            #chart {
+                height: calc(100% - 40px) !important; /* Maximum space for chart */
+            }
+        }
+        .info-box {
+            background: rgba(255, 45, 146, 0.05);
+            border: 1px solid rgba(255, 45, 146, 0.15);
+            border-left: 3px solid var(--magenta-500);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .info-box-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--magenta-500);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 15px;
+        }
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .info-row-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .info-row-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .info-row-value.positive { color: var(--success); }
+        .info-row-value-with-scenario {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .range-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(255, 45, 146, 0.4);
+        }
+        
+        /* Premium Magenta Styling für Preissteigerungs-Slider */
+        .premium-slider {
+            height: 8px;
+            background: linear-gradient(90deg, 
+                rgba(255, 45, 146, 0.12) 0%, 
+                rgba(255, 45, 146, 0.04) 100%
+            );
+            border: 1px solid rgba(255, 45, 146, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .premium-slider:hover {
+            background: linear-gradient(90deg, 
+                rgba(255, 45, 146, 0.18) 0%, 
+                rgba(255, 45, 146, 0.08) 100%
+            );
+            border-color: rgba(255, 45, 146, 0.3);
+            box-shadow: 
+                0 0 20px rgba(255, 45, 146, 0.15),
+                0 0 40px rgba(255, 45, 146, 0.08);
+        }
+        
+        /* Premium Thumb - elegant, kein fetter Punkt */
+        .premium-slider::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, 
+                #ff2d92 0%, 
+                #e91e7a 50%,
+                #d1186a 100%
+            );
+            box-shadow: 
+                0 2px 8px rgba(255, 45, 146, 0.4),
+                0 4px 16px rgba(255, 45, 146, 0.3),
+                0 0 0 3px rgba(255, 45, 146, 0.12),
+                inset 0 1px 2px rgba(255, 255, 255, 0.25);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .premium-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 
+                0 4px 12px rgba(255, 45, 146, 0.5),
+                0 8px 24px rgba(255, 45, 146, 0.4),
+                0 0 0 5px rgba(255, 45, 146, 0.15),
+                inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .premium-slider::-webkit-slider-thumb:active {
+            transform: scale(1.1);
+            box-shadow: 
+                0 2px 6px rgba(255, 45, 146, 0.6),
+                0 4px 12px rgba(255, 45, 146, 0.5),
+                0 0 0 4px rgba(255, 45, 146, 0.2),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Firefox Support */
+        .premium-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, 
+                #ff2d92 0%, 
+                #e91e7a 50%,
+                #d1186a 100%
+            );
+            box-shadow: 
+                0 2px 8px rgba(255, 45, 146, 0.4),
+                0 4px 16px rgba(255, 45, 146, 0.3),
+                0 0 0 3px rgba(255, 45, 146, 0.12);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+        
+        .premium-slider::-moz-range-track {
+            height: 8px;
+            background: linear-gradient(90deg, 
+                rgba(255, 45, 146, 0.12) 0%, 
+                rgba(255, 45, 146, 0.04) 100%
+            );
+            border: 1px solid rgba(255, 45, 146, 0.15);
+            border-radius: 6px;
+        }
+        .expandable { margin-bottom: 24px; animation: fadeInUp 0.8s ease-out; }
+        .expandable-header {
+            background: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            padding: 24px 28px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+        .expandable-header:hover {
+            border-color: rgba(255, 45, 146, 0.2);
+            background: rgba(26, 26, 26, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 45, 146, 0.15);
+        }
+        .expandable-header.open {
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            border-color: rgba(255, 45, 146, 0.2);
+        }
+        .expandable-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .expandable-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 45, 146, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            font-size: 14px;
+            color: var(--magenta-500);
+        }
+        .expandable-header.open .expandable-icon {
+            transform: rotate(180deg);
+            background: rgba(255, 45, 146, 0.15);
+        }
+        .expandable-content {
+            background: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: none;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .expandable-content.open { padding: 24px; max-height: 1500px; }
+        .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            flex: 1;
+            min-width: 120px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .radio-label input { 
+            display: none; /* Hide the radio button completely */
+        }
+        .radio-label:hover {
+            border-color: rgba(255, 45, 146, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+        .radio-label.checked {
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(255, 45, 146, 0.3);
+        }
+        .saved-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            transition: var(--transition-fast);
+        }
+        .saved-item:hover {
+            border-color: rgba(255, 45, 146, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-2px);
+        }
+        .saved-item-name { font-weight: 600; color: var(--text-primary); font-size: 16px; }
+        .saved-item-date { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+        .saved-item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .saved-item-btn {
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius-md); /* Größerer Radius für edleren Look */
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+        .saved-item-btn.load { 
+            background: linear-gradient(135deg, 
+                var(--success) 0%, 
+                #20b859 100%
+            );
+            color: white;
+            box-shadow: 
+                0 4px 12px rgba(48, 209, 88, 0.25),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        .saved-item-btn.load:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 20px rgba(48, 209, 88, 0.35),
+                inset 0 1px 3px rgba(255, 255, 255, 0.3);
+        }
+        .saved-item-btn.delete {
+            background: transparent;
+            border: 1.5px solid rgba(255, 69, 58, 0.4);
+            color: var(--danger);
+            box-shadow: 0 2px 8px rgba(255, 69, 58, 0.1);
+        }
+        .saved-item-btn.delete:hover { 
+            background: rgba(255, 69, 58, 0.15);
+            border-color: rgba(255, 69, 58, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 4px 16px rgba(255, 69, 58, 0.25),
+                0 0 20px rgba(255, 69, 58, 0.15);
+        }
+        .saved-item-btn.delete:active {
+            transform: translateY(0);
+        }
+        .saved-item-btn.pdf { 
+            background: rgba(139, 92, 246, 0.2); 
+            color: #a78bfa;
+            border-radius: var(--radius-md);
+        }
+        .saved-item-btn.share { 
+            background: rgba(59, 130, 246, 0.2); 
+            color: #60a5fa;
+            border-radius: var(--radius-md);
+        }
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+        .empty-state-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.2; }
+        .empty-state-text { font-size: 16px; font-weight: 500; }
+        .btn-reset {
+            width: 100%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        .btn-reset:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.03);
+            transform: translateY(-2px);
+        }
+        .info-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            line-height: 1.6;
+        }
+        .info-text strong { color: var(--text-secondary); font-weight: 600; }
+        
+        /* Savings Highlight Box */
+        .savings-highlight-box {
+            background: linear-gradient(135deg, rgba(255, 45, 146, 0.05) 0%, rgba(255, 45, 146, 0.02) 100%);
+            border: 1px solid rgba(255, 45, 146, 0.15);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin: 12px 0;
+            text-align: center;
+        }
+        .savings-highlight-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--magenta-500);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+        .savings-highlight-amount {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--magenta-500) 0%, var(--magenta-600) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+        .savings-highlight-amount-with-scenario {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 10px;
+        }
+        .savings-highlight-details {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .savings-highlight-detail {
+            margin: 1px 0;
+        }
+        .savings-highlight-detail strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        /* 1k5 Theme - Cyan/Green for new costs, return rates, and payback */
+        [data-theme="1k5"] #pvNewEnergyCost,
+        [data-theme="1k5"] #pvNewEnergyCostLabel,
+        [data-theme="1k5"] #totalNewEnergyCost,
+        [data-theme="1k5"] #totalNewEnergyCostLabel {
+            color: #30d158 !important;
+        }
+        
+        /* 1K5 Theme - Financing Costs: Orange */
+        [data-theme="1k5"] #totalFinancingCostInSavings,
+        [data-theme="1k5"] #totalFinancingCost {
+            color: #ff9f0a !important;
+        }
+        
+        [data-theme="1k5"] #savingsFinancingDetails > div:first-child > span:first-child {
+            color: #ff9f0a !important;
+        }
+        
+        /* 1K5 Theme - Net Savings Label: Green */
+        [data-theme="1k5"] #savingsFinancingDetails .savings-highlight-amount {
+            color: #ff2d92 !important; /* Magenta for main savings number */
+        }
+        
+        [data-theme="1k5"] #savingsFinancingDetails > div:nth-child(2) > div:first-child {
+            color: #30d158 !important; /* Green for "= NETTO-ERSPARNIS P.A." */
+        }
+        
+        /* Keep savings details in default color (not green) in 1K5 mode */
+        [data-theme="1k5"] .savings-highlight-details .savings-highlight-detail {
+            color: var(--text-secondary) !important; /* Gray, not green */
+        }
+        
+        /* 1K5 Theme - Rendite Values: Green for old (first), Orange for new (scenario) */
+        [data-theme="1k5"] .result-box-rendite-value {
+            color: #30d158 !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+            background-clip: unset !important;
+        }
+        
+        [data-theme="1k5"] #totalReturnRateScenario {
+            color: #ff9f0a !important; /* Orange for new rendite */
+        }
+        
+        /* 1K5 Theme - Amortization Values: White for old, Orange for new (scenario) */
+        [data-theme="1k5"] .result-box-value {
+            color: var(--text-primary) !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+            background-clip: unset !important;
+        }
+        
+        [data-theme="1k5"] #totalPaybackYearsScenario {
+            color: #ff9f0a !important; /* Orange for new amortization */
+        }
+        
+        /* 1K5 Theme - Scenario value secondary: Orange */
+        [data-theme="1k5"] .scenario-value-secondary {
+            color: #ff9f0a !important;
+        }
+        
+        [data-theme="1k5"] .header h1 {
+            color: var(--success);
+        }
+        
+        /* Monthly Cash Flow Minimal Theme Styles */
+        [data-theme="1k5"] #monthlyCashFlowSection .expandable-trigger {
+            border-color: rgba(0, 217, 255, 0.15);
+        }
+        
+        [data-theme="1k5"] #monthlyCashFlowSection .expandable-trigger:hover {
+            background: rgba(0, 217, 255, 0.03);
+            border-color: rgba(0, 217, 255, 0.25);
+        }
+        
+        [data-theme="1k5"] #monthlyCashFlowSection .expandable-trigger > div:first-child,
+        [data-theme="1k5"] #monthlyCashFlowSection .expand-icon {
+            color: var(--cyan-500);
+        }
+        
+        /* Monthly Cash Flow Content Colors - 1K5 Mode */
+        [data-theme="1k5"] #monthlyOldCosts {
+            color: #ff453a !important; /* Red for old costs */
+        }
+        
+        [data-theme="1k5"] #monthlyNewCosts,
+        [data-theme="1k5"] #monthlySavings {
+            color: #30d158 !important; /* Green for new costs and savings */
+        }
+        
+        [data-theme="1k5"] #monthlyFinancingRate {
+            color: #ff9f0a !important; /* Orange for financing rate */
+        }
+        
+        [data-theme="1k5"] #monthlyNetLabel,
+        [data-theme="1k5"] #monthlyNetAmount {
+            color: #30d158 !important; /* Green for monthly advantage */
+        }
+        
+        /* Monthly Cash Flow Labels - 1K5 Mode */
+        [data-theme="1k5"] #monthlyCashFlowContent > div > div:nth-child(3) > span:first-child {
+            color: #30d158 !important; /* Green for "Ersparnis" label */
+        }
+        
+        /* Monthly Cash Flow Explanation Text Colors - 1K5 Mode */
+        [data-theme="1k5"] #monthlyFlowMessage strong {
+            color: #30d158 !important; /* Green for all bold numbers in explanation */
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+        .stat-card-value { font-size: 24px; font-weight: 700; color: var(--magenta-500); }
+        .scenario-comparison {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-left: 12px;
+        }
+        .scenario-comparison .arrow { 
+            color: var(--text-secondary); 
+            font-weight: bold; 
+            font-size: 16px;
+            line-height: 1;
+        }
+        .scenario-comparison .value { 
+            color: var(--success); 
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1;
+        }
+        /* Red values for increased costs */
+        .scenario-comparison-danger .value {
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1;
+        }
+        /* Gray values for breakdown costs */
+        .scenario-comparison-muted .value {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1;
+        }
+        /* Orange values for savings */
+        .scenario-comparison-warning .value {
+            color: var(--warning);
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1;
+        }
+        .info-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        .info-tooltip svg { width: 18px; height: 18px; color: var(--text-muted); transition: var(--transition-fast); }
+        .info-tooltip:hover svg { color: var(--magenta-500); }
+        .info-tooltip .tooltip-content {
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            background: rgba(30, 30, 40, 0.98);
+            border: 1px solid rgba(255, 45, 146, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-fast);
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+        }
+        .info-tooltip .tooltip-content strong { color: var(--text-primary); font-weight: 600; }
+        .info-tooltip:hover .tooltip-content { opacity: 1; visibility: visible; }
+        .info-tooltip .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(30, 30, 40, 0.98);
+        }
+        .label-with-tooltip { display: flex; align-items: center; }
+        .read-only-notice {
+            background: rgba(255, 45, 146, 0.1);
+            border: 1px solid rgba(255, 45, 146, 0.3);
+            border-radius: var(--radius-md);
+            padding: 16px 24px;
+            margin-bottom: 32px;
+            text-align: center;
+            color: var(--magenta-500);
+            font-weight: 500;
+        }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: var(--bg-tertiary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+        .modal-title.warning { color: var(--warning); }
+        .modal-text { color: var(--text-secondary); margin-bottom: 24px; }
+        .modal-actions { display: flex; gap: 12px; }
+        .modal-actions .btn { flex: 1; }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        *:focus-visible { outline: 2px solid var(--magenta-500); outline-offset: 3px; }
+        @media (max-width: 768px) {
+            .btn-group { grid-template-columns: 1fr 1fr; }
+            .radio-group { flex-direction: column; }
+            .saved-item { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .saved-item-actions { width: 100%; justify-content: flex-start; }
+            
+            /* Monthly Cash Flow Mobile - Minimal */
+            #monthlyCashFlowSection .expandable-trigger {
+                padding: 8px 10px !important;
+            }
+            #monthlyCashFlowSection .expandable-trigger > div:first-child {
+                font-size: 12px !important;
+            }
+            #monthlyCashFlowContent {
+                padding: 12px !important;
+            }
+            #monthlyCashFlowContent > div > div {
+                padding: 6px 0 !important;
+            }
+            #monthlyCashFlowContent span[style*="font-size: 12px"] {
+                font-size: 11px !important;
+            }
+            #monthlyCashFlowContent span[style*="font-size: 15px"] {
+                font-size: 14px !important;
+            }
+            #monthlyCashFlowContent span[style*="font-size: 17px"] {
+                font-size: 16px !important;
+            }
+            #monthlyFlowExplanation {
+                padding: 8px !important;
+                font-size: 10px !important;
+            }
+        }
+        
+        /* PDF Generation Loading */
+        .pdf-loading {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .pdf-loading.show { display: flex; }
+        .pdf-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 45, 146, 0.2);
+            border-top-color: var(--magenta-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .pdf-loading-text {
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        /* Calculation info details styling */
+        details {
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: background 0.2s ease;
+        }
+        details:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        details summary {
+            font-weight: 600;
+            outline: none;
+            transition: color 0.2s ease;
+        }
+        details summary:hover {
+            color: var(--primary) !important;
+        }
+        details[open] summary {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        details[open] summary::before {
+            content: "▾ ";
+        }
+        details:not([open]) summary::before {
+            content: "▸ ";
+        }
+        details summary::marker {
+            content: "";
+        }
+    </style>
+</head>
+<body>
+
+<!-- Theme Switcher -->
+<div class="container">
+    <header class="header">
+        <h1 id="mainTitle">Energie-Investitionsrechner</h1>
+        <p>Berechnen Sie Ihre Amortisationszeit und Rendite</p>
+        <div class="header-actions">
+            <button class="header-btn" id="themeToggleBtn" title="Zwischen Dark und 1K5° Modus wechseln" style="padding: 8px 16px; display: flex; align-items: center; gap: 8px;">
+                <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                </svg>
+                <span id="themeLabel" style="font-size: 14px; font-weight: 600;">Dark</span>
+            </button>
+            <button class="header-btn" id="randomFillBtn" title="Zufällige Werte">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h4a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm14 0h4a2 2 0 012 2v4a2 2 0 01-2 2h-4a2 2 0 01-2-2V5a2 2 0 012-2zM5 13h4a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4a2 2 0 012-2zm14 0h4a2 2 0 012 2v4a2 2 0 01-2 2h-4a2 2 0 01-2-2v-4a2 2 0 012-2z"/></svg>
+            </button>
+            <button class="header-btn" id="resetHeaderBtn" title="Zurücksetzen">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            </button>
+        </div>
+    </header>
+    <div id="readOnlyNotice" class="read-only-notice" style="display: none;">Dies ist eine geteilte Berechnung (nur Ansicht)</div>
+    
+    <!-- Main Investment Section -->
+    <section class="glass-card">
+        <div class="section-header">
+            <h2 class="section-title">Basis-Investition</h2>
+            <p class="section-subtitle">Ihre Hauptinvestitionen eingeben</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="input-group">
+                <label for="pvCost" class="input-label">Investitionskosten Photovoltaik</label>
+                <span class="input-help">Gesamtkosten der PV-Anlage inkl. Installation</span>
+                <input type="text" id="pvCost" class="input-field" placeholder="z.B. 25.000 €">
+            </div>
+            <div class="input-group">
+                <label for="heatPumpCost" class="input-label">Investitionskosten Heizsystem</label>
+                <span class="input-help">Kosten für Wärmepumpe inkl. Installation</span>
+                <input type="text" id="heatPumpCost" class="input-field" placeholder="z.B. 20.000 €">
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="energyCostWithHB" class="input-label">Neue Energiekosten pro Jahr</label>
+            <span class="input-help">Ihre neuen Energiekosten mit 1Komma5 Heartbeat AI</span>
+            <input type="text" id="energyCostWithHB" class="input-field" placeholder="z.B. 200 €">
+        </div>
+    </section>
+
+    <!-- Financing Section -->
+    <div class="expandable">
+        <div class="expandable-header" onclick="toggleExpand('financing')">
+            <span class="expandable-title">Berechnung mit Finanzierung</span>
+            <div class="expandable-icon">▼</div>
+        </div>
+        <div class="expandable-content" id="financing-content">
+            <div class="input-group">
+                <label class="input-label">Zu finanzierende Investitionen</label>
+                <div class="btn-group">
+                    <button class="btn active" id="financePvBtn" onclick="toggleFinance('pv')">Photovoltaik</button>
+                    <button class="btn active" id="financeHpBtn" onclick="toggleFinance('hp')">Heizsystem</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Wunschbetrag (Nettodarlehensbetrag)</label>
+                <div class="range-value" id="loanAmountDisplay">0 €</div>
+                <input type="range" id="loanAmount" class="range-slider" min="0" max="75000" step="100" value="0">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Laufzeit (in Monaten)</label>
+                <div class="btn-group">
+                    <button class="btn" onclick="selectTerm(60)">60</button>
+                    <button class="btn" onclick="selectTerm(120)">120</button>
+                    <button class="btn active" id="term180" onclick="selectTerm(180)">180</button>
+                    <button class="btn" onclick="selectTerm(240)">240</button>
+                </div>
+            </div>
+            <div class="grid grid-3">
+                <div class="stat-card">
+                    <div class="stat-card-label">Eff. Jahreszins</div>
+                    <input type="text" id="interestRate" class="input-field" value="4,00 %" style="text-align: center; font-size: 20px; font-weight: 700; color: var(--magenta-500); background: transparent; border: none; padding: 8px;">
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Monatsrate</div>
+                    <div class="stat-card-value" id="monthlyRateDisplay">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Zinskosten mtl.</div>
+                    <div class="stat-card-value" id="monthlyInterestDisplay">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Household Electricity Section -->
+    <div class="expandable">
+        <div class="expandable-header" onclick="toggleExpand('household')">
+            <span class="expandable-title">Berechnung Haushaltsstrom</span>
+            <div class="expandable-icon">▼</div>
+        </div>
+        <div class="expandable-content" id="household-content">
+            <details style="margin-bottom: 20px;">
+                <summary style="cursor: pointer; color: var(--text-secondary); font-size: 14px; user-select: none;">
+                    Grundlagen der Berechnung
+                </summary>
+                <div class="info-text" style="margin-top: 8px; padding-left: 12px;">
+                    • Aktuelle Stromkosten pro Jahr = Strompreis (ct/kWh) × Verbrauch (kWh)
+                </div>
+            </details>
+            <div class="grid grid-2">
+                <div class="input-group">
+                    <label for="currentElectricityCost" class="input-label">Aktuelle Stromkosten</label>
+                    <span class="input-help">Ihr aktueller Strompreis vom Versorger</span>
+                    <input type="text" id="currentElectricityCost" class="input-field" placeholder="z.B. 35 ct/kWh">
+                </div>
+                <div class="input-group">
+                    <label for="householdElectricityUsage" class="input-label">Jährlicher Haushaltsstrom</label>
+                    <span class="input-help">Stromverbrauch des Haushalts pro Jahr</span>
+                    <input type="text" id="householdElectricityUsage" class="input-field" placeholder="z.B. 4.500 kWh">
+                </div>
+            </div>
+            <div class="input-group" style="margin-top: 24px;">
+                <label for="currentElectricityTotal" class="input-label">Aktuelle Stromkosten pro Jahr</label>
+                <span class="input-help">Wird automatisch berechnet oder manuell anpassbar</span>
+                <input type="text" id="currentElectricityTotal" class="input-field" placeholder="z.B. 1.575 €">
+            </div>
+        </div>
+    </div>
+
+    <!-- E-Mobility Section -->
+    <div class="expandable">
+        <div class="expandable-header" onclick="toggleExpand('emobility')">
+            <span class="expandable-title">Berechnung für Elektromobilität</span>
+            <div class="expandable-icon">▼</div>
+        </div>
+        <div class="expandable-content" id="emobility-content">
+            <details style="margin-bottom: 20px;">
+                <summary style="cursor: pointer; color: var(--text-secondary); font-size: 14px; user-select: none;">
+                    Grundlagen der Berechnung
+                </summary>
+                <div class="info-text" style="margin-top: 8px; padding-left: 12px;">
+                    • Benzin: Durchschnittsverbrauch 7,7 Liter pro 100km, Durchschnittspreis 1,75 €/Liter<br>
+                    • Diesel: Durchschnittsverbrauch 7,0 Liter pro 100km, Durchschnittspreis 1,65 €/Liter<br>
+                    • Elektroauto: Durchschnittsverbrauch 15 kWh pro 100km
+                </div>
+            </details>
+            <div class="input-group">
+                <label for="mileage" class="input-label">Jährliche Laufleistung</label>
+                <span class="input-help">Gesamtkilometer pro Jahr mit dem Fahrzeug</span>
+                <input type="text" id="mileage" class="input-field" placeholder="z.B. 15.000 km">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Aktueller Energieträger</label>
+                <div class="radio-group">
+                    <label class="radio-label checked" id="petrolLabel">
+                        <input type="radio" name="fuel" value="petrol" checked onchange="selectFuel('petrol')">
+                        <span>Benzin</span>
+                    </label>
+                    <label class="radio-label" id="dieselLabel">
+                        <input type="radio" name="fuel" value="diesel" onchange="selectFuel('diesel')">
+                        <span>Diesel</span>
+                    </label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="evKwhConsumption" class="input-label">Jährlicher kWh-Verbrauch Fahrzeug</label>
+                <span class="input-help">Wird automatisch berechnet, kann angepasst werden</span>
+                <input type="text" id="evKwhConsumption" class="input-field" placeholder="z.B. 2.250 kWh">
+            </div>
+            <div class="input-group" style="margin-top: 24px;">
+                <label for="currentFuelCostTotal" class="input-label">Aktuelle Kraftstoffkosten pro Jahr</label>
+                <span class="input-help">Wird automatisch berechnet, kann angepasst werden</span>
+                <input type="text" id="currentFuelCostTotal" class="input-field" placeholder="z.B. 2.020 €">
+            </div>
+        </div>
+    </div>
+
+    <!-- Heat Pump Section -->
+    <div class="expandable">
+        <div class="expandable-header" onclick="toggleExpand('heatpump')">
+            <span class="expandable-title">Berechnung Wärmepumpe</span>
+            <div class="expandable-icon">▼</div>
+        </div>
+        <div class="expandable-content" id="heatpump-content">
+            <details style="margin-bottom: 20px;">
+                <summary style="cursor: pointer; color: var(--text-secondary); font-size: 14px; user-select: none;">
+                    Grundlagen der Berechnung
+                </summary>
+                <div class="info-text" style="margin-top: 8px; padding-left: 12px;">
+                    • Gas: Umrechnungsfaktor 1 m³ ≈ 10 kWh Wärmeenergie, Durchschnittspreis 0,11 €/kWh<br>
+                    • Öl: Umrechnungsfaktor 1 Liter ≈ 10 kWh Wärmeenergie, Durchschnittspreis 0,95 €/Liter<br>
+                    • Wärmepumpe: Durchschnitts-COP (Coefficient of Performance)
+                </div>
+            </details>
+            <div class="grid grid-2">
+                <div class="input-group">
+                    <label for="gasConsumption" class="input-label">Jährlicher Gasverbrauch</label>
+                    <input type="text" id="gasConsumption" class="input-field" placeholder="z.B. 1.500 m³">
+                </div>
+                <div class="input-group">
+                    <label for="oilConsumption" class="input-label">Jährlicher Heizölverbrauch</label>
+                    <input type="text" id="oilConsumption" class="input-field" placeholder="z.B. 1.500 Liter">
+                </div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Aktueller Energieträger</label>
+                <div class="radio-group">
+                    <label class="radio-label checked" id="gasLabel">
+                        <input type="radio" name="heatSource" value="gas" checked onchange="selectHeatSource('gas')">
+                        <span>Gas</span>
+                    </label>
+                    <label class="radio-label" id="oilLabel">
+                        <input type="radio" name="heatSource" value="oil" onchange="selectHeatSource('oil')">
+                        <span>Öl</span>
+                    </label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="hpKwhConsumption" class="input-label">Jährlicher kWh-Verbrauch Wärmepumpe</label>
+                <span class="input-help">Wird automatisch berechnet, kann angepasst werden</span>
+                <input type="text" id="hpKwhConsumption" class="input-field" placeholder="z.B. 5.000 kWh">
+            </div>
+            <div class="input-group" style="margin-top: 24px;">
+                <label for="currentHeatingCostTotal" class="input-label">Aktuelle Heizkosten pro Jahr</label>
+                <span class="input-help">Wird automatisch berechnet, kann angepasst werden</span>
+                <input type="text" id="currentHeatingCostTotal" class="input-field" placeholder="z.B. 1.500 €">
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultSection" style="display: none;">
+        <!-- PV Only Result -->
+
+        <!-- Combined Result -->
+        <section class="result-box result-box-secondary" id="totalResultBox">
+            <div class="result-box-content">
+                <div class="result-box-left">
+                    <div class="result-box-title" id="totalResultTitle">Amortisationszeit (Photovoltaiksystem & Heizsystem)</div>
+                    
+                    <!-- Top Grid: Investment and Energy Costs side by side -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
+                        <!-- Investment Section -->
+                        <div class="result-section-divider" style="margin: 0; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.5px; margin-bottom: 12px;">INVESTITION</div>
+                            <div class="result-detail-row" id="totalPvRow">
+                                <span>Photovoltaik:</span>
+                                <span id="totalPvCost">--</span>
+                            </div>
+                            <div class="result-detail-row" id="totalHpRow" style="display: none;">
+                                <span>Heizsystem:</span>
+                                <span id="totalHpCost">--</span>
+                            </div>
+                            <div class="result-detail-row" id="totalInvestmentSumRow" style="font-weight: 600; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span>Gesamtinvestition:</span>
+                                <span id="totalInvestmentSum">--</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Energy Costs Comparison Section -->
+                        <div class="result-section-divider" style="margin: 0; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.5px; margin-bottom: 12px;">ENERGIEKOSTEN-VERGLEICH</div>
+                            <div class="result-box-details">
+                                <div class="result-detail-expandable">
+                                    <div class="result-detail-row expandable-trigger" onclick="toggleTotalCurrentCostsBreakdown()" style="cursor: pointer;">
+                                        <span style="color: var(--danger);" id="totalCurrentCostLabel">Aktuelle Gesamtkosten p.a.:</span>
+                                        <span style="color: var(--danger);" id="totalCurrentCost">--</span>
+                                        <span id="totalCurrentCostScenarioDisplay" class="scenario-comparison scenario-comparison-danger" style="display: none;">
+                                            <span class="arrow">→</span>
+                                            <span class="value" id="totalCurrentCostScenarioValue">--</span>
+                                        </span>
+                                        <div class="expand-icon" id="totalCurrentCostsExpandIcon" style="margin-left: 8px; transition: transform 0.3s;">▼</div>
+                                    </div>
+                                    <div id="totalCurrentCostsBreakdown" style="display: none; margin-top: 8px; padding-left: 16px; border-left: 2px solid rgba(255, 45, 146, 0.2);">
+                                        <div class="result-detail-row" style="font-size: 14px;">
+                                            <span style="color: var(--text-secondary);">Stromkosten:</span>
+                                            <span style="color: var(--text-secondary);" id="totalCurrentCostElectricity">--</span>
+                                        </div>
+                                        <div class="result-detail-row" id="totalCurrentCostFuelRow" style="display: none; font-size: 14px;">
+                                            <span style="color: var(--text-secondary);">Kraftstoffkosten:</span>
+                                            <span style="color: var(--text-secondary);" id="totalCurrentCostFuel">--</span>
+                                            <span id="totalCurrentCostFuelScenarioDisplay" class="scenario-comparison scenario-comparison-muted" style="display: none;">
+                                                <span class="arrow">→</span>
+                                                <span class="value" id="totalCurrentCostFuelScenarioValue">--</span>
+                                            </span>
+                                        </div>
+                                        <div class="result-detail-row" id="totalCurrentCostHeatingRow" style="display: none; font-size: 14px;">
+                                            <span style="color: var(--text-secondary);">Heizkosten:</span>
+                                            <span style="color: var(--text-secondary);" id="totalCurrentCostHeating">--</span>
+                                            <span id="totalCurrentCostHeatingScenarioDisplay" class="scenario-comparison scenario-comparison-muted" style="display: none;">
+                                                <span class="arrow">→</span>
+                                                <span class="value" id="totalCurrentCostHeatingScenarioValue">--</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="result-detail-row" style="margin-top: 12px;">
+                                    <span style="color: var(--success);" id="totalNewEnergyCostLabel">Neue Gesamtenergiekosten p.a.:</span>
+                                    <span style="color: var(--success);" id="totalNewEnergyCost">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Savings Section -->
+                    <div class="savings-highlight-box" style="margin-bottom: 16px;">
+                        <div class="savings-highlight-header">IHRE JÄHRLICHE ERSPARNIS</div>
+                        <div class="savings-highlight-amount-with-scenario">
+                            <span class="savings-highlight-amount" id="totalGrossSavings">--</span>
+                            <span id="totalSavingsScenarioDisplay" class="scenario-comparison scenario-comparison-warning" style="display: none;">
+                                <span class="arrow" style="font-size: 20px; line-height: 1.2;">→</span>
+                                <span class="value" id="totalSavingsScenarioValue" style="font-size: 24px; font-weight: 800; line-height: 1.2;">--</span>
+                            </span>
+                        </div>
+                        <div class="savings-highlight-details">
+                            <div class="savings-highlight-detail">
+                                Das entspricht einer Reduktion von <strong id="totalSavingsPercent">--</strong><span id="totalSavingsPercentScenarioText" style="display: none;"> (oder <strong id="totalSavingsPercentScenarioValue" style="color: var(--warning);">--</strong> bei Preissteigerung)</span>
+                            </div>
+                            <div class="savings-highlight-detail">
+                                oder <strong id="totalSavingsMonthly">--</strong> pro Monat<span id="totalSavingsMonthlyScenarioText" style="display: none;"> (oder <strong id="totalSavingsMonthlyScenarioValue" style="color: var(--warning);">--</strong> bei Preissteigerung)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Financing details inside savings box -->
+                        <div id="savingsFinancingDetails" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 2px solid rgba(255, 152, 0, 0.3);">
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                <span style="color: var(--warning); font-weight: 600; font-size: 14px;">./. Jährliche Zinskosten:</span>
+                                <span style="color: var(--warning); font-weight: 700; font-size: 17px;" id="totalFinancingCostInSavings">--</span>
+                            </div>
+                            <div style="padding: 12px; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                                <div style="font-size: 12px; font-weight: 700; color: var(--success); letter-spacing: 0.5px; margin-bottom: 8px;">= NETTO-ERSPARNIS P.A.</div>
+                                <div class="savings-highlight-amount-with-scenario">
+                                    <span class="savings-highlight-amount" style="color: var(--success); font-size: 28px;" id="totalNetSavingsInBox">--</span>
+                                    <span id="totalNetSavingsScenarioDisplayInBox" class="scenario-comparison scenario-comparison-warning" style="display: none;">
+                                        <span class="arrow" style="font-size: 23px; line-height: 1.2;">→</span>
+                                        <span class="value" id="totalNetSavingsScenarioValueInBox" style="font-size: 28px; font-weight: 800; line-height: 1.2;">--</span>
+                                    </span>
+                                </div>
+                                <div class="savings-highlight-details">
+                                    <div class="savings-highlight-detail" style="color: var(--success);">Das entspricht einer Reduktion von <strong id="totalNetSavingsPercent">--</strong></div>
+                                    <div class="savings-highlight-detail" style="color: var(--success);">oder <strong id="totalNetSavingsMonthly">--</strong> pro Monat</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Financing Section -->
+                    <div class="result-section-divider" id="financingSectionDivider" style="display: none; margin: 0 0 16px 0; padding: 16px; background: rgba(255, 152, 0, 0.05); border-radius: 12px; border: 1px solid rgba(255, 152, 0, 0.15);">
+                        <div style="font-size: 13px; font-weight: 700; color: var(--warning); letter-spacing: 0.5px; margin-bottom: 12px;">FINANZIERUNG</div>
+                        <div class="result-detail-row" id="totalFinancingRow" style="display: none;">
+                            <span class="text-warning" style="font-weight: 600;">./. Jährliche Zinskosten:</span>
+                            <span class="text-warning" style="font-weight: 700; font-size: 17px;" id="totalFinancingCost">--</span>
+                        </div>
+                        <div class="result-detail-row" id="totalNetRow" style="display: none; font-weight: 600; margin-top: 12px; padding-top: 12px; border-top: 2px solid rgba(255, 152, 0, 0.2);">
+                            <span class="text-bold" style="font-size: 15px;">= Netto-Ersparnis p.a.:</span>
+                            <span style="font-weight: 700; font-size: 18px; color: var(--success);" id="totalNetSavings">--</span>
+                            <span id="totalNetSavingsScenarioDisplay" class="scenario-comparison scenario-comparison-warning" style="display: none;">
+                                <span class="arrow">→</span>
+                                <span class="value" id="totalNetSavingsScenarioValue">--</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly Cash Flow Breakdown - Minimal & Clean -->
+                    <div id="monthlyCashFlowSection" style="display: none; margin: 20px 0;">
+                        <div class="expandable-trigger" onclick="toggleMonthlyCashFlow()" style="cursor: pointer; padding: 10px 12px; background: transparent; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; transition: all 0.25s ease;">
+                            <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">Monatliche Übersicht</div>
+                            <div class="expand-icon" id="monthlyCashFlowExpandIcon" style="transition: transform 0.25s ease; color: var(--text-secondary); font-size: 14px;">▼</div>
+                        </div>
+                        
+                        <div id="monthlyCashFlowContent" style="display: none; margin-top: 12px; padding: 16px; background: rgba(255, 255, 255, 0.02); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <!-- Clean Table-like Layout -->
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <!-- Cost Comparison Row -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <span style="font-size: 12px; color: var(--text-secondary);">Bisherige Kosten</span>
+                                    <span style="font-size: 15px; font-weight: 700; color: var(--danger);" id="monthlyOldCosts">--</span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <span style="font-size: 12px; color: var(--text-secondary);">Neue Energiekosten</span>
+                                    <span style="font-size: 15px; font-weight: 700; color: var(--success);" id="monthlyNewCosts">--</span>
+                                </div>
+                                
+                                <!-- Savings Row - Highlighted -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin: 4px 0;">
+                                    <span style="font-size: 13px; font-weight: 700; color: var(--success);">Ersparnis</span>
+                                    <span style="font-size: 17px; font-weight: 800; color: var(--success);" id="monthlySavings">--</span>
+                                </div>
+                                
+                                <!-- Financing Section -->
+                                <div id="monthlyFinancingRow" style="display: none; padding-top: 8px; margin-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                        <span style="font-size: 12px; color: var(--text-secondary);">Finanzierungsrate</span>
+                                        <span style="font-size: 15px; font-weight: 700; color: var(--warning);" id="monthlyFinancingRate">--</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-top: 4px;">
+                                        <span style="font-size: 13px; font-weight: 700;" id="monthlyNetLabel">Monatlicher Vorteil</span>
+                                        <span style="font-size: 17px; font-weight: 800; color: var(--success);" id="monthlyNetAmount">--</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Compact Explanation - Always visible when section is open -->
+                                <div id="monthlyFlowExplanation" style="display: none; margin-top: 12px; padding: 10px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; font-size: 11px; color: var(--text-secondary); line-height: 1.5;">
+                                    <span id="monthlyFlowMessage">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Amortization and Return Rate Side by Side -->
+                    <div style="margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <!-- Amortisationszeit Column -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                            <div class="result-box-rendite-label">Amortisationszeit</div>
+                            <div class="result-box-value-container" style="justify-content: center;">
+                                <span class="result-box-value" id="totalPaybackYears">--</span>
+                                <span class="result-scenario" id="totalPaybackScenario" style="display: none;">
+                                    <span class="scenario-arrow">→</span>
+                                    <span id="totalPaybackYearsScenario" class="scenario-value-secondary">--</span>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Jährliche Rendite Column -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                            <div class="result-box-rendite-label">Jährliche Rendite</div>
+                            <div class="result-box-rendite-container" style="justify-content: center;">
+                                <span class="result-box-rendite-value" id="totalReturnRate">--</span>
+                                <span class="result-scenario" id="totalReturnScenario" style="display: none;">
+                                    <span class="scenario-arrow">→</span>
+                                    <span id="totalReturnRateScenario" class="scenario-value-secondary">--</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart -->
+        <section class="chart-container">
+            <h3 class="chart-header" id="chartTitle">Investition eingespielt</h3>
+            <canvas id="chart" style="height: calc(100% - 60px);"></canvas>
+        </section>
+    </div>
+
+    <!-- Price Increase Section -->
+    <div class="expandable" style="margin-top: 40px;">
+        <div class="expandable-header" onclick="toggleExpand('priceIncrease')">
+            <span class="expandable-title">Preissteigerung fossiler Energien</span>
+            <div class="expandable-icon">▼</div>
+        </div>
+        <div class="expandable-content" id="priceIncrease-content">
+            <div class="grid grid-2" style="gap: 16px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label class="input-label" style="font-size: 14px; margin-bottom: 8px;">Preissteigerung Kraftstoff p.a.</label>
+                    <div class="range-value" id="vehicleIncreaseDisplay" style="font-size: 15px;">0,0 %</div>
+                    <input type="range" id="vehicleIncrease" class="range-slider premium-slider" min="0" max="20" step="0.1" value="0">
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label class="input-label" style="font-size: 14px; margin-bottom: 8px;">Preissteigerung Heizkosten p.a.</label>
+                    <div class="range-value" id="heatingIncreaseDisplay" style="font-size: 15px;">0,0 %</div>
+                    <input type="range" id="heatingIncrease" class="range-slider premium-slider" min="0" max="20" step="0.1" value="0">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financing Section -->
+    <div class="expandable">
+        <div class="expandable-header" onclick="toggleIncludeFinancing()">
+            <span class="expandable-title">Finanzierung einrechnen</span>
+            <div class="toggle-switch" id="includeFinancingToggle" onclick="event.stopPropagation(); toggleIncludeFinancing();" style="margin-left: auto;"></div>
+        </div>
+    </div>
+
+    <!-- Save Calculation Section -->
+    <section class="glass-card" id="saveSection">
+        <div class="section-header">
+            <h2 class="section-title">Berechnung speichern</h2>
+            <p class="section-subtitle">Speichern Sie Ihre Berechnung für später</p>
+        </div>
+        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+            <input type="text" id="calcName" class="input-field" placeholder="Name für Ihre Berechnung" style="flex: 1;">
+            <button class="btn-primary" onclick="saveCalculation()" style="padding: 16px 32px; white-space: nowrap;">Speichern</button>
+        </div>
+        <div id="savedList"></div>
+        <div id="emptyState" class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-text">Noch keine gespeicherten Berechnungen</div>
+        </div>
+    </section>
+
+    <button class="btn-reset" id="bottomResetBtn" onclick="resetApp()">Alle Eingaben zurücksetzen</button>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-title">Löschen bestätigen</div>
+        <div class="modal-text">Möchten Sie diese Berechnung wirklich löschen?</div>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeDeleteModal()" style="padding: 16px 32px; min-width: 140px;">Abbrechen</button>
+            <button class="btn-primary" onclick="confirmDelete()" style="background: var(--danger); padding: 16px 40px; min-width: 140px;">Löschen</button>
+        </div>
+    </div>
+</div>
+
+<!-- Error/Info Modal -->
+<div class="modal" id="errorModal">
+    <div class="modal-content">
+        <div class="modal-title warning" id="errorTitle">Hinweis</div>
+        <div class="modal-text" id="errorMessage"></div>
+        <div class="modal-actions">
+            <button class="btn-primary" onclick="closeErrorModal()">Verstanden</button>
+        </div>
+    </div>
+</div>
+
+<!-- PDF Loading -->
+<div class="pdf-loading" id="pdfLoading">
+    <div class="pdf-loading-spinner"></div>
+    <div class="pdf-loading-text">PDF wird erstellt...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// Fallback für jsPDF
+if (typeof window.jspdf === 'undefined') {
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    document.head.appendChild(script);
+}
+// Fallback für html2canvas
+if (typeof html2canvas === 'undefined') {
+    var script2 = document.createElement('script');
+    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    document.head.appendChild(script2);
+}
+
+// Theme Management
+</script>
+<script>
+const state = {
+    pvCost: 0, heatPumpCost: 0, energyCostWithHB: 0, householdElectricity: 0,
+    currentElectricityCost: 0, householdElectricityUsage: 0,
+    currentElectricityTotal: 0, currentFuelCostTotal: 0, currentHeatingCostTotal: 0,
+    mileage: 0, evKwhConsumption: 0, gasConsumption: 0, oilConsumption: 0, hpKwhConsumption: 0,
+    fuelType: 'petrol', heatSource: 'gas',
+    financePv: true, financeHp: true, loanAmount: 0, termMonths: 180, interestRate: 4.00,
+    includeFinancing: false, includePriceIncrease: false, vehicleIncrease: 0, heatingIncrease: 0,
+    isLoanAmountManual: false, isEvManual: false, isHpManual: false, isFuelCostManual: false, isHeatingCostManual: false
+};
+
+const CONST = {
+    PETROL_CONSUMPTION: 7.7, PETROL_PRICE: 1.75, DIESEL_CONSUMPTION: 7.0, DIESEL_PRICE: 1.65,
+    EV_CONSUMPTION: 15, GAS_PRICE: 0.11, OIL_PRICE: 0.95,
+    KWH_PER_LITER_OIL: 10, KWH_PER_M3_GAS: 10, COP_DAIKIN: 4.5, COP_STIEBEL: 4.5
+};
+
+let chart = null;
+// PERMANENT STORAGE: Saved calculations are stored in localStorage permanently.
+// They will remain until the user manually deletes them or clears browser data.
+// No automatic cleanup or expiration after 7 days or any time period.
+let saved = [];
+try {
+    saved = JSON.parse(localStorage.getItem('energyCalcSaved') || '[]');
+} catch (e) {
+    console.error('LocalStorage load failed:', e);
+    // Continue with empty array if load fails
+}
+let deleteId = null;
+
+const parseNum = (v) => parseFloat(String(v).replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
+const formatCurrency = (v) => isNaN(v) || !isFinite(v) ? '--' : new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v);
+const formatNumber = (v, d = 0) => isNaN(v) || !isFinite(v) ? '--' : new Intl.NumberFormat('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+const formatYears = (v) => isNaN(v) || v <= 0 || !isFinite(v) ? '--' : v >= 50 ? '> 50 Jahre' : v.toFixed(1).replace('.', ',') + ' Jahre';
+const formatPercent = (v) => isNaN(v) || !isFinite(v) ? '--' : v.toFixed(1).replace('.', ',') + ' %';
+
+// Safe helper to set textContent
+const safeSetText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+    else console.warn(`Element with id "${id}" not found`);
+};
+
+// Safe helper to get element
+const safeGetElement = (id) => {
+    const el = document.getElementById(id);
+    if (!el) console.warn(`Element with id "${id}" not found`);
+    return el;
+};
+
+// Safe helper to set display style
+const safeSetDisplay = (id, displayValue) => {
+    const el = safeGetElement(id);
+    if (el) el.style.display = displayValue;
+};
+
+// Safe helper to add/remove class
+const safeToggleClass = (id, className, add = true) => {
+    const el = safeGetElement(id);
+    if (el) {
+        if (add) el.classList.add(className);
+        else el.classList.remove(className);
+    }
+};
+
+const showErrorModal = (message, title = "Hinweis") => {
+    safeSetText('errorMessage', message);
+    safeSetText('errorTitle', title);
+    document.getElementById('errorModal').classList.add('show');
+};
+const closeErrorModal = () => document.getElementById('errorModal').classList.remove('show');
+
+const calcFinancing = () => {
+    const p = state.loanAmount, t = state.termMonths, r = state.interestRate / 100 / 12;
+    let monthly = 0;
+    if (p > 0 && t > 0) monthly = r > 0 ? p * (r * Math.pow(1 + r, t)) / (Math.pow(1 + r, t) - 1) : p / t;
+    const total = monthly * t, interest = total > p ? total - p : 0;
+    return { monthly, annualInterest: (interest / t) * 12, monthlyInterest: interest / t };
+};
+
+const calcEV = () => {
+    let fossilCost = state.fuelType === 'petrol' 
+        ? (state.mileage / 100) * CONST.PETROL_CONSUMPTION * CONST.PETROL_PRICE
+        : (state.mileage / 100) * CONST.DIESEL_CONSUMPTION * CONST.DIESEL_PRICE;
+    
+    // Calculate effective price from TOTAL demand (household + ev + hp)
+    // Now safe because we use fixed COP, so HP demand doesn't change with model selection
+    const totalDemand = state.householdElectricity + state.evKwhConsumption + state.hpKwhConsumption;
+    const effectivePrice = totalDemand > 0 ? (state.energyCostWithHB || 0) / totalDemand : 0;
+    const evCost = state.evKwhConsumption * effectivePrice;
+    
+    return { fossilCost, evCost, savings: fossilCost - evCost };
+};
+
+const calcHP = () => {
+    let heatConsumption = 0, fossilCost = 0;
+    if (state.heatSource === 'gas') {
+        heatConsumption = state.gasConsumption * CONST.KWH_PER_M3_GAS;
+        fossilCost = heatConsumption * CONST.GAS_PRICE;
+    } else {
+        heatConsumption = state.oilConsumption * CONST.KWH_PER_LITER_OIL;
+        fossilCost = state.oilConsumption * CONST.OIL_PRICE;
+    }
+    // Use fixed COP of 4.5 for all heat pumps
+    const cop = 4.5;
+    const calculatedHpKwh = cop > 0 ? heatConsumption / cop : 0;
+    
+    // Calculate effective price from TOTAL demand (household + ev + hp)
+    // Now safe because we use fixed COP, so HP demand doesn't change with model selection
+    const totalDemand = state.householdElectricity + state.evKwhConsumption + state.hpKwhConsumption;
+    const effectivePrice = totalDemand > 0 ? (state.energyCostWithHB || 0) / totalDemand : 0;
+    const hpCost = state.hpKwhConsumption * effectivePrice;
+    
+    return { fossilCost, hpCost, savings: fossilCost - hpCost, calculatedHpKwh };
+};
+
+const calcHousehold = () => {
+    const oldCost = state.householdElectricityUsage * (state.currentElectricityCost / 100);
+    
+    // Calculate effective price from TOTAL demand (household + ev + hp)
+    // Now safe because we use fixed COP, so HP demand doesn't change with model selection
+    const totalDemand = state.householdElectricity + state.evKwhConsumption + state.hpKwhConsumption;
+    const effectivePrice = totalDemand > 0 ? (state.energyCostWithHB || 0) / totalDemand : 0;
+    const newCost = state.householdElectricityUsage * effectivePrice;
+    
+    return { oldCost, newCost, savings: oldCost - newCost };
+};
+
+const calcAmortization = (config) => {
+    const { investmentCost, annualFinancingCost, usePV, useEMobility, useHP, generateChartData = false, 
+            forceNoPriceIncrease = false, forceNoFinancing = false, customNewEnergyCost = null } = config;
+    if (investmentCost <= 0) return { years: 0, chartData: [], initialNetSavings: 0, initialGrossSavings: 0 };
+
+    let cumulativeNetSavings = 0;
+    const chartData = [];
+    let paybackYear = NaN;
+    const maxYears = 51;
+    
+    if (generateChartData) chartData.push({ year: 0, cumulativeSavings: 0 });
+
+    let initialGrossSavings = 0;
+    // Auto-enable price increase if either slider is > 0
+    const usePriceIncreaseLogic = (state.vehicleIncrease > 0 || state.heatingIncrease > 0) && !forceNoPriceIncrease;
+    const useFinancingLogic = state.includeFinancing && !forceNoFinancing;
+
+    const ev = calcEV();
+    const hp = calcHP();
+
+    // Calculate old energy costs DYNAMICALLY based on what's actually used
+    // Determine what components are active based on parameters AND state
+    const hasPV = usePV && state.pvCost > 0;
+    const hasWP = useHP && (state.gasConsumption > 0 || state.oilConsumption > 0 || state.currentHeatingCostTotal > 0);
+    const hasEMobility = useEMobility && (state.mileage > 0 || state.currentFuelCostTotal > 0);
+    
+    let oldEnergyCosts = 0;
+    
+    // Use manual cost inputs if provided, otherwise use calculated values
+    const electricityCost = state.currentElectricityTotal || 0;
+    const fuelCost = state.currentFuelCostTotal > 0 ? state.currentFuelCostTotal : ev.fossilCost;
+    const heatingCost = state.currentHeatingCostTotal > 0 ? state.currentHeatingCostTotal : hp.fossilCost;
+    
+    if (hasPV && !hasWP && !hasEMobility) {
+        // Only PV: Current Electricity only
+        oldEnergyCosts = electricityCost;
+    } else if (!hasPV && hasWP && !hasEMobility) {
+        // Only Heat Pump: Current Heating only
+        oldEnergyCosts = heatingCost;
+    } else if (hasPV && hasEMobility && !hasWP) {
+        // PV + E-Mobility: Current Electricity + Fuel
+        oldEnergyCosts = electricityCost + fuelCost;
+    } else {
+        // All other combinations: Sum what's used
+        oldEnergyCosts = 0;
+        if (hasPV) {
+            oldEnergyCosts += electricityCost;
+        }
+        if (hasEMobility) {
+            oldEnergyCosts += fuelCost;
+        }
+        if (hasWP) {
+            oldEnergyCosts += heatingCost;
+        }
+    }
+
+    // New energy costs: use custom value if provided, otherwise use user input
+    const newEnergyCosts = customNewEnergyCost !== null ? customNewEnergyCost : (state.energyCostWithHB || 0);
+    
+    // Gross savings = old costs - new costs
+    initialGrossSavings = oldEnergyCosts - newEnergyCosts;
+    
+    const effectiveFinancingCost = useFinancingLogic ? annualFinancingCost : 0;
+    const initialNetSavings = initialGrossSavings - effectiveFinancingCost;
+
+    if (initialNetSavings <= 0 && (state.vehicleIncrease <= 0 && state.heatingIncrease <= 0)) {
+        return { years: Infinity, chartData: [], initialNetSavings, initialGrossSavings, newEnergyCosts };
+    }
+
+    for (let year = 0; year < maxYears; year++) {
+        const yearMultiplier = usePriceIncreaseLogic ? year + 1 : 1;
+        let oldCostsThisYear = 0;
+        
+        // Dynamic calculation based on active components
+        // Use manual cost inputs if provided, otherwise use calculated values with price increases
+        const fuelCostThisYear = state.currentFuelCostTotal > 0 
+            ? state.currentFuelCostTotal * Math.pow(1 + state.vehicleIncrease / 100, yearMultiplier - 1)
+            : ev.fossilCost * Math.pow(1 + state.vehicleIncrease / 100, yearMultiplier - 1);
+            
+        const heatingCostThisYear = state.currentHeatingCostTotal > 0
+            ? state.currentHeatingCostTotal * Math.pow(1 + state.heatingIncrease / 100, yearMultiplier - 1)
+            : hp.fossilCost * Math.pow(1 + state.heatingIncrease / 100, yearMultiplier - 1);
+        
+        if (hasPV && !hasWP && !hasEMobility) {
+            // Only PV: Current Electricity only
+            oldCostsThisYear = state.currentElectricityTotal || 0;
+        } else if (!hasPV && hasWP && !hasEMobility) {
+            // Only Heat Pump: Current Heating with price increase
+            oldCostsThisYear = heatingCostThisYear;
+        } else if (hasPV && hasEMobility && !hasWP) {
+            // PV + E-Mobility: Electricity + Fuel with price increase
+            oldCostsThisYear = (state.currentElectricityTotal || 0) + fuelCostThisYear;
+        } else {
+            // All other combinations - start from 0 and add only active components
+            oldCostsThisYear = 0;
+            if (hasPV) {
+                oldCostsThisYear += state.currentElectricityTotal || 0;
+            }
+            if (hasEMobility) {
+                oldCostsThisYear += fuelCostThisYear;
+            }
+            if (hasWP) {
+                oldCostsThisYear += heatingCostThisYear;
+            }
+        }
+
+        const grossSavingsThisYear = oldCostsThisYear - newEnergyCosts;
+        const netSavingsThisYear = grossSavingsThisYear - effectiveFinancingCost;
+
+        if (isNaN(paybackYear) && cumulativeNetSavings + netSavingsThisYear >= investmentCost) {
+            const remainingCost = investmentCost - cumulativeNetSavings;
+            if (netSavingsThisYear > 0) paybackYear = year + remainingCost / netSavingsThisYear;
+            else paybackYear = Infinity;
+        }
+
+        cumulativeNetSavings += netSavingsThisYear;
+        if (generateChartData) chartData.push({ year: year + 1, cumulativeSavings: cumulativeNetSavings });
+
+        if (!isNaN(paybackYear) && generateChartData && chartData.length >= 30) break;
+        if (!isNaN(paybackYear) && !generateChartData) break;
+    }
+
+    if (isNaN(paybackYear)) paybackYear = Infinity;
+
+    while (generateChartData && chartData.length > 0 && chartData.length < 30) {
+        const lastDataPoint = chartData[chartData.length - 1];
+        const lastSavings = chartData.length > 1 ? lastDataPoint.cumulativeSavings - chartData[chartData.length - 2].cumulativeSavings : lastDataPoint.cumulativeSavings;
+        chartData.push({ year: lastDataPoint.year + 1, cumulativeSavings: lastDataPoint.cumulativeSavings + lastSavings });
+    }
+
+    return { years: paybackYear, chartData, initialNetSavings, initialGrossSavings, newEnergyCosts };
+};
+
+const updateUI = () => {
+    // Auto-sync household electricity from householdElectricityUsage
+    state.householdElectricity = state.householdElectricityUsage;
+    
+    // Auto-calculate consumptions
+    if (!state.isEvManual) state.evKwhConsumption = (state.mileage / 100) * CONST.EV_CONSUMPTION;
+    if (!state.isHpManual) state.hpKwhConsumption = calcHP().calculatedHpKwh;
+    
+    // Update auto-calculated inputs
+    const evInput = document.getElementById('evKwhConsumption');
+    if (document.activeElement !== evInput) evInput.value = state.evKwhConsumption > 0 ? `${formatNumber(state.evKwhConsumption)} kWh` : '';
+    const hpInput = document.getElementById('hpKwhConsumption');
+    if (document.activeElement !== hpInput) hpInput.value = state.hpKwhConsumption > 0 ? `${formatNumber(state.hpKwhConsumption)} kWh` : '';
+    
+    // Update loan amount
+    if (!state.isLoanAmountManual) {
+        state.loanAmount = (state.financePv ? state.pvCost : 0) + (state.financeHp ? state.heatPumpCost : 0);
+    }
+    
+    const newMax = Math.max(75000, state.pvCost + state.heatPumpCost);
+    document.getElementById('loanAmount').max = newMax;
+    document.getElementById('loanAmount').value = state.loanAmount;
+    safeSetText('loanAmountDisplay', formatCurrency(state.loanAmount));
+    
+    // Calculate totalFinanced for display
+    const totalFinanced = (state.financePv ? state.pvCost : 0) + (state.financeHp ? state.heatPumpCost : 0);
+    
+    // Calculate financing based on ACTUAL financed amount for display
+    let monthlyRate = 0, monthlyInterestForDisplay = 0;
+    if (totalFinanced > 0 && state.termMonths > 0) {
+        const p = totalFinanced;
+        const t = state.termMonths;
+        const r = state.interestRate / 100 / 12;
+        if (p > 0 && t > 0) monthlyRate = r > 0 ? p * (r * Math.pow(1 + r, t)) / (Math.pow(1 + r, t) - 1) : p / t;
+        const total = monthlyRate * t;
+        const interest = total > p ? total - p : 0;
+        monthlyInterestForDisplay = interest / t;
+    }
+    
+    safeSetText('monthlyRateDisplay', formatCurrency(monthlyRate));
+    safeSetText('monthlyInterestDisplay', formatCurrency(monthlyInterestForDisplay));
+    
+    // E-Mobility & Heat pump calculations
+    const ev = calcEV();
+    const hp = calcHP();
+    const household = calcHousehold();
+    
+    // Auto-calculate and update current cost fields
+    // Household electricity: ct/kWh × kWh / 100 = €
+    const calculatedElectricityCost = household.oldCost;
+    const elecInput = document.getElementById('currentElectricityTotal');
+    if (!state.isElectricityCostManual) {
+        if (document.activeElement !== elecInput) {
+            elecInput.value = calculatedElectricityCost > 0 ? `${formatNumber(calculatedElectricityCost)} €` : '';
+        }
+        state.currentElectricityTotal = calculatedElectricityCost;
+    }
+    
+    // E-Mobility: km × consumption/100km × price
+    const calculatedFuelCost = ev.fossilCost;
+    const fuelInput = document.getElementById('currentFuelCostTotal');
+    if (!state.isFuelCostManual) {
+        if (document.activeElement !== fuelInput) {
+            fuelInput.value = calculatedFuelCost > 0 ? `${formatNumber(calculatedFuelCost)} €` : '';
+        }
+        state.currentFuelCostTotal = calculatedFuelCost;
+    }
+    
+    // Heat pump: consumption × price
+    const calculatedHeatingCost = hp.fossilCost;
+    const heatingInput = document.getElementById('currentHeatingCostTotal');
+    if (!state.isHeatingCostManual) {
+        if (document.activeElement !== heatingInput) {
+            heatingInput.value = calculatedHeatingCost > 0 ? `${formatNumber(calculatedHeatingCost)} €` : '';
+        }
+        state.currentHeatingCostTotal = calculatedHeatingCost;
+    }
+    
+    // Electricity demand calculation
+    const totalDemand = state.householdElectricity + state.evKwhConsumption + state.hpKwhConsumption;
+    
+    // Calculate interest shares using totalFinanced already declared above
+    let pvInterest = 0, totalInterest = 0;
+    
+    // Calculate financing based on ACTUAL financed amount (not state.loanAmount)
+    if (totalFinanced > 0 && state.termMonths > 0) {
+        const p = totalFinanced;
+        const t = state.termMonths;
+        const r = state.interestRate / 100 / 12;
+        let monthly = 0;
+        if (p > 0 && t > 0) monthly = r > 0 ? p * (r * Math.pow(1 + r, t)) / (Math.pow(1 + r, t) - 1) : p / t;
+        const total = monthly * t;
+        const interest = total > p ? total - p : 0;
+        const annualInterest = (interest / t) * 12;
+        
+        totalInterest = annualInterest;
+        pvInterest = state.financePv && totalFinanced > 0 ? annualInterest * (state.pvCost / totalFinanced) : 0;
+    }
+    
+    // === PV Only Result Box ===
+    // Use same new energy cost as Total box
+    const newEnergyCostForPV = state.energyCostWithHB || 0;
+    
+    const basePvConfigNoFin = {
+        investmentCost: state.pvCost,
+        annualFinancingCost: pvInterest,
+        usePV: true,
+        useEMobility: false, 
+        useHP: false,
+        forceNoFinancing: true,
+        customNewEnergyCost: newEnergyCostForPV  // Use same value as input
+    };
+    const basePvResultsNoFin = calcAmortization(basePvConfigNoFin);
+    const basePvReturnRateNoFin = state.pvCost > 0 ? (basePvResultsNoFin.initialGrossSavings / state.pvCost) * 100 : NaN;
+    
+    // PV result box removed - showing only combined result now
+    
+    // === Combined Result Box ===
+    const totalInvestment = state.pvCost + state.heatPumpCost;
+    const hasHeatPump = state.heatPumpCost > 0;
+    const hasEv = state.mileage > 0 || state.currentFuelCostTotal > 0;
+    const hasHp = state.gasConsumption > 0 || state.oilConsumption > 0 || state.currentHeatingCostTotal > 0;
+    const hasPV = state.pvCost > 0;
+    
+    // Show calculation box for ANY investment (PV alone, WP alone, or combined)
+    const showTotalBox = totalInvestment > 0;
+    
+    document.getElementById('totalResultBox').style.display = showTotalBox ? 'block' : 'none';
+    
+    if (showTotalBox) {
+        const totalConfig = {
+            investmentCost: totalInvestment,
+            annualFinancingCost: totalInterest,
+            usePV: hasPV, 
+            useEMobility: hasEv, 
+            useHP: hasHp,
+            generateChartData: true
+        };
+        
+        const totalResults = calcAmortization(totalConfig);
+        
+        // Calculate WITHOUT financing for comparison (baseline without financing)
+        const totalResultsNoFinancing = calcAmortization({ 
+            ...totalConfig, 
+            generateChartData: false, 
+            forceNoPriceIncrease: true, 
+            forceNoFinancing: true  // Force no financing for baseline
+        });
+        
+        // Baseline: without price increase, BUT with financing if toggle is on
+        const totalResultsBaseline = calcAmortization({ 
+            ...totalConfig, 
+            generateChartData: false, 
+            forceNoPriceIncrease: true, 
+            forceNoFinancing: false  // Keep financing if user wants it
+        });
+        
+        // Calculate return rates
+        const totalReturnRateNoFinancing = totalInvestment > 0 ? (totalResultsNoFinancing.initialGrossSavings / totalInvestment) * 100 : NaN;
+        const totalReturnRateBaseline = totalInvestment > 0 ? (totalResultsBaseline.initialNetSavings / totalInvestment) * 100 : NaN;
+        const totalReturnRate = totalInvestment > 0 ? (totalResults.initialNetSavings / totalInvestment) * 100 : NaN;
+        
+        // Net savings are already calculated correctly in calcAmortization
+        const totalNetSavingsBaseline = totalResultsBaseline.initialNetSavings;
+        const totalNetSavingsWithPrice = totalResults.initialNetSavings;
+        
+        const titleParts = [];
+        if (state.pvCost > 0) titleParts.push('Photovoltaiksystem');
+        if (hasEv) titleParts.push('Wallbox');
+        if (hasHeatPump) titleParts.push('Heizsystem');
+        safeSetText('totalResultTitle', `Amortisationszeit (${titleParts.join(' & ')})`);
+        
+        document.getElementById('totalPvRow').style.display = state.pvCost > 0 ? 'flex' : 'none';
+        safeSetText('totalPvCost', formatCurrency(state.pvCost));
+        document.getElementById('totalHpRow').style.display = hasHeatPump ? 'flex' : 'none';
+        safeSetText('totalHpCost', formatCurrency(state.heatPumpCost));
+        
+        // Calculate and display total investment
+        const totalInvestmentAmount = state.pvCost + state.heatPumpCost;
+        safeSetText('totalInvestmentSum', formatCurrency(totalInvestmentAmount));
+        // Only show investment sum row if there's more than one investment
+        document.getElementById('totalInvestmentSumRow').style.display = (state.pvCost > 0 && hasHeatPump) ? 'flex' : 'none';
+        
+        // Dynamic labels based on what's included
+        let costTypeLabel = 'Stromkosten';
+        let energyCostLabel = 'Stromkosten';
+        
+        if (hasPV && !hasEv && !hasHp) {
+            // Only PV
+            costTypeLabel = 'Stromkosten';
+            energyCostLabel = 'Stromkosten';
+        } else if (!hasPV && !hasEv && hasHp) {
+            // Only Heat Pump
+            costTypeLabel = 'Heizkosten';
+            energyCostLabel = 'Heizkosten';
+        } else if (hasPV && hasEv && !hasHp) {
+            // PV + E-Mobility
+            costTypeLabel = 'Gesamtkosten';
+            energyCostLabel = 'Gesamtenergiekosten';
+        } else {
+            // Multiple components
+            costTypeLabel = 'Gesamtkosten';
+            energyCostLabel = 'Gesamtenergiekosten';
+        }
+        
+        safeSetText('totalCurrentCostLabel', `Aktuelle ${costTypeLabel} p.a.:`);
+        safeSetText('totalNewEnergyCostLabel', `Neue ${energyCostLabel} p.a.:`);
+        
+        // Calculate current costs DYNAMICALLY based on what's selected
+        let totalCurrentCosts = 0;
+        
+        // Determine what components are active (use existing hasPV from outer scope)
+        const hasWP = state.heatPumpCost > 0;
+        
+        if (hasPV && !hasWP && !hasEv) {
+            // Only PV: Current Electricity - New Electricity
+            totalCurrentCosts = state.currentElectricityTotal || 0;
+        } else if (!hasPV && hasWP && !hasEv) {
+            // Only Heat Pump: Current Heating - New Heating
+            totalCurrentCosts = state.currentHeatingCostTotal || 0;
+        } else if (hasPV && hasEv && !hasWP) {
+            // PV + E-Mobility: Current Electricity + Fuel - New Total
+            totalCurrentCosts = (state.currentElectricityTotal || 0) + (state.currentFuelCostTotal || 0);
+        } else {
+            // All combinations with multiple components: Sum all
+            totalCurrentCosts = (state.currentElectricityTotal || 0) + (state.currentFuelCostTotal || 0) + (state.currentHeatingCostTotal || 0);
+        }
+        safeSetText('totalCurrentCost', formatCurrency(totalCurrentCosts));
+        
+        // Display new energy costs - add indicator if negative (feed-in surplus)
+        const newEnergyCost = state.energyCostWithHB || 0;
+        const newEnergyCostElement = document.getElementById('totalNewEnergyCost');
+        if (newEnergyCostElement) {
+            newEnergyCostElement.textContent = formatCurrency(newEnergyCost);
+            // Add visual indicator for negative costs (feed-in revenue)
+            if (newEnergyCost < 0) {
+                newEnergyCostElement.style.color = 'var(--success)';
+                newEnergyCostElement.title = 'Einspeisevergütung übersteigt Verbrauch - zusätzlicher Gewinn!';
+            } else {
+                newEnergyCostElement.style.color = 'var(--success)';
+                newEnergyCostElement.title = '';
+            }
+        }
+        
+        // Current costs breakdown for total
+        safeSetText('totalCurrentCostElectricity', formatCurrency(state.currentElectricityTotal || 0));
+        safeSetText('totalCurrentCostFuel', formatCurrency(state.currentFuelCostTotal || 0));
+        safeSetText('totalCurrentCostHeating', formatCurrency(state.currentHeatingCostTotal || 0));
+        
+        document.getElementById('totalCurrentCostFuelRow').style.display = hasEv ? 'flex' : 'none';
+        document.getElementById('totalCurrentCostHeatingRow').style.display = hasHp ? 'flex' : 'none';
+        
+        // Display total results - determine baseline for gross savings
+        let finalResultsForChart = totalResults;
+        const hasPriceIncrease = state.vehicleIncrease > 0 || state.heatingIncrease > 0;
+        const hasFinancing = state.includeFinancing && totalInterest > 0;
+        
+        // Set baseline gross savings based on active scenarios
+        if (hasFinancing && hasPriceIncrease) {
+            // BOTH: Show baseline without either
+            const totalGrossBaseline = totalResultsNoFinancing.initialGrossSavings;
+            safeSetText('totalGrossSavings', formatCurrency(totalGrossBaseline));
+            
+            // Calculate percentage and monthly savings for baseline (use dynamic totalCurrentCosts from above)
+            const totalSavingsPercent = totalCurrentCosts > 0 ? ((totalGrossBaseline / totalCurrentCosts) * 100) : 0;
+            const totalSavingsMonthly = totalGrossBaseline / 12;
+            safeSetText('totalSavingsPercent', formatPercent(totalSavingsPercent));
+            safeSetText('totalSavingsMonthly', formatCurrency(totalSavingsMonthly));
+        } else {
+            // ONE OR NONE: Show baseline with financing if active, without price increases
+            const totalGrossBaseline = totalResultsBaseline.initialGrossSavings;
+            safeSetText('totalGrossSavings', formatCurrency(totalGrossBaseline));
+            
+            // Calculate percentage and monthly savings for baseline (use dynamic totalCurrentCosts from above)
+            const totalSavingsPercent = totalCurrentCosts > 0 ? ((totalGrossBaseline / totalCurrentCosts) * 100) : 0;
+            const totalSavingsMonthly = totalGrossBaseline / 12;
+            safeSetText('totalSavingsPercent', formatPercent(totalSavingsPercent));
+            safeSetText('totalSavingsMonthly', formatCurrency(totalSavingsMonthly));
+        }
+        
+        if (hasFinancing && hasPriceIncrease) {
+            // BOTH ACTIVE: Show combined effect (without any → with both)
+            const ev = calcEV();
+            const hp = calcHP();
+            let oldCostsWithIncrease = state.currentElectricityTotal || 0;
+            let fuelCostWithIncrease = 0;
+            let heatingCostWithIncrease = 0;
+            
+            if (hasEv) {
+                fuelCostWithIncrease = ev.fossilCost * (1 + state.vehicleIncrease / 100);
+                oldCostsWithIncrease += fuelCostWithIncrease;
+            }
+            if (hasHp) {
+                heatingCostWithIncrease = hp.fossilCost * (1 + state.heatingIncrease / 100);
+                oldCostsWithIncrease += heatingCostWithIncrease;
+            }
+            
+            // Calculate new savings with increased old costs
+            const newGrossSavingsWithIncrease = oldCostsWithIncrease - (state.energyCostWithHB || 0);
+            const newNetSavingsWithIncrease = newGrossSavingsWithIncrease - totalInterest;
+            const newReturnRateWithIncrease = totalInvestment > 0 ? (newNetSavingsWithIncrease / totalInvestment) * 100 : NaN;
+            
+            // Display increased old costs with arrow
+            safeSetText('totalCurrentCostScenarioValue', formatCurrency(oldCostsWithIncrease));
+            document.getElementById('totalCurrentCostScenarioDisplay').style.display = 'inline-flex';
+            
+            // Display increased fuel costs with arrow
+            if (hasEv && state.vehicleIncrease > 0) {
+                safeSetText('totalCurrentCostFuelScenarioValue', formatCurrency(fuelCostWithIncrease));
+                document.getElementById('totalCurrentCostFuelScenarioDisplay').style.display = 'inline';
+            } else {
+                document.getElementById('totalCurrentCostFuelScenarioDisplay').style.display = 'none';
+            }
+            
+            // Display increased heating costs with arrow
+            if (hasHp && state.heatingIncrease > 0) {
+                safeSetText('totalCurrentCostHeatingScenarioValue', formatCurrency(heatingCostWithIncrease));
+                document.getElementById('totalCurrentCostHeatingScenarioDisplay').style.display = 'inline';
+            } else {
+                document.getElementById('totalCurrentCostHeatingScenarioDisplay').style.display = 'none';
+            }
+            
+            // Display increased gross savings
+            safeSetText('totalSavingsScenarioValue', formatCurrency(newGrossSavingsWithIncrease));
+            document.getElementById('totalSavingsScenarioDisplay').style.display = 'inline-flex';
+            
+            // Hauptwert: OHNE Finanzierung, OHNE Preissteigerungen (clean baseline)
+            safeSetText('totalPaybackYears', formatYears(totalResultsNoFinancing.years));
+            safeSetText('totalReturnRate', formatPercent(totalReturnRateNoFinancing));
+            // Szenario: MIT Finanzierung, MIT Preissteigerungen (combined impact)
+            safeSetText('totalPaybackYearsScenario', formatYears(totalResults.years));
+            safeSetText('totalReturnRateScenario', formatPercent(newReturnRateWithIncrease));
+            document.getElementById('totalPaybackScenario').style.display = 'inline-flex';
+            document.getElementById('totalReturnScenario').style.display = 'inline-flex';
+        } else if (hasFinancing) {
+            // ONLY FINANCING: Show financing impact (without financing → with financing)
+            document.getElementById('totalCurrentCostScenarioDisplay').style.display = 'none';
+            document.getElementById('totalCurrentCostFuelScenarioDisplay').style.display = 'none';
+            document.getElementById('totalCurrentCostHeatingScenarioDisplay').style.display = 'none';
+            document.getElementById('totalSavingsScenarioDisplay').style.display = 'none';
+            
+            // Hauptwert: OHNE Finanzierung (Baseline)
+            safeSetText('totalPaybackYears', formatYears(totalResultsNoFinancing.years));
+            safeSetText('totalReturnRate', formatPercent(totalReturnRateNoFinancing));
+            // Szenario: MIT Finanzierung (shows impact)
+            safeSetText('totalPaybackYearsScenario', formatYears(totalResultsBaseline.years));
+            safeSetText('totalReturnRateScenario', formatPercent(totalReturnRateBaseline));
+            document.getElementById('totalPaybackScenario').style.display = 'inline-flex';
+            document.getElementById('totalReturnScenario').style.display = 'inline-flex';
+        } else if (hasPriceIncrease) {
+            // ONLY PRICE INCREASE: Show price increase scenario
+            const ev = calcEV();
+            const hp = calcHP();
+            let oldCostsWithIncrease = state.currentElectricityTotal || 0;
+            let fuelCostWithIncrease = 0;
+            let heatingCostWithIncrease = 0;
+            
+            if (hasEv) {
+                fuelCostWithIncrease = ev.fossilCost * (1 + state.vehicleIncrease / 100);
+                oldCostsWithIncrease += fuelCostWithIncrease;
+            }
+            if (hasHp) {
+                heatingCostWithIncrease = hp.fossilCost * (1 + state.heatingIncrease / 100);
+                oldCostsWithIncrease += heatingCostWithIncrease;
+            }
+            
+            // Calculate new savings with increased old costs
+            const newGrossSavingsWithIncrease = oldCostsWithIncrease - (state.energyCostWithHB || 0);
+            const newNetSavingsWithIncrease = newGrossSavingsWithIncrease - (state.includeFinancing ? totalInterest : 0);
+            const newReturnRateWithIncrease = totalInvestment > 0 ? (newNetSavingsWithIncrease / totalInvestment) * 100 : NaN;
+            
+            // Display increased old costs with arrow
+            safeSetText('totalCurrentCostScenarioValue', formatCurrency(oldCostsWithIncrease));
+            document.getElementById('totalCurrentCostScenarioDisplay').style.display = 'inline-flex';
+            
+            // Display increased fuel costs with arrow
+            if (hasEv && state.vehicleIncrease > 0) {
+                safeSetText('totalCurrentCostFuelScenarioValue', formatCurrency(fuelCostWithIncrease));
+                document.getElementById('totalCurrentCostFuelScenarioDisplay').style.display = 'inline';
+            } else {
+                document.getElementById('totalCurrentCostFuelScenarioDisplay').style.display = 'none';
+            }
+            
+            // Display increased heating costs with arrow
+            if (hasHp && state.heatingIncrease > 0) {
+                safeSetText('totalCurrentCostHeatingScenarioValue', formatCurrency(heatingCostWithIncrease));
+                document.getElementById('totalCurrentCostHeatingScenarioDisplay').style.display = 'inline';
+            } else {
+                document.getElementById('totalCurrentCostHeatingScenarioDisplay').style.display = 'none';
+            }
+            
+            // Display increased gross savings
+            safeSetText('totalSavingsScenarioValue', formatCurrency(newGrossSavingsWithIncrease));
+            document.getElementById('totalSavingsScenarioDisplay').style.display = 'inline-flex';
+            
+            // Calculate and display scenario percent and monthly values
+            const newSavingsPercent = oldCostsWithIncrease > 0 ? ((newGrossSavingsWithIncrease / oldCostsWithIncrease) * 100) : 0;
+            const newSavingsMonthly = newGrossSavingsWithIncrease / 12;
+            
+            safeSetText('totalSavingsPercentScenarioValue', formatPercent(newSavingsPercent));
+            safeSetText('totalSavingsMonthlyScenarioValue', formatCurrency(newSavingsMonthly));
+            document.getElementById('totalSavingsPercentScenarioText').style.display = 'inline';
+            document.getElementById('totalSavingsMonthlyScenarioText').style.display = 'inline';
+            
+            safeSetText('totalPaybackYears', formatYears(totalResultsBaseline.years));
+            safeSetText('totalReturnRate', formatPercent(totalReturnRateBaseline));
+            safeSetText('totalPaybackYearsScenario', formatYears(totalResults.years));
+            // Use manually calculated return rate with immediate price increases
+            safeSetText('totalReturnRateScenario', formatPercent(newReturnRateWithIncrease));
+            document.getElementById('totalPaybackScenario').style.display = 'inline-flex';
+            document.getElementById('totalReturnScenario').style.display = 'inline-flex';
+        } else {
+            // No scenario to show
+            document.getElementById('totalCurrentCostScenarioDisplay').style.display = 'none';
+            document.getElementById('totalCurrentCostFuelScenarioDisplay').style.display = 'none';
+            document.getElementById('totalCurrentCostHeatingScenarioDisplay').style.display = 'none';
+            document.getElementById('totalSavingsScenarioDisplay').style.display = 'none';
+            document.getElementById('totalSavingsPercentScenarioText').style.display = 'none';
+            document.getElementById('totalSavingsMonthlyScenarioText').style.display = 'none';
+            safeSetText('totalPaybackYears', formatYears(totalResults.years));
+            safeSetText('totalReturnRate', formatPercent(totalReturnRate));
+            document.getElementById('totalPaybackScenario').style.display = 'none';
+            document.getElementById('totalReturnScenario').style.display = 'none';
+        }
+        
+        const showTotalFinancing = state.includeFinancing && totalInterest > 0;
+        // Hide old financing section, show new integrated one
+        document.getElementById('financingSectionDivider').style.display = 'none';
+        document.getElementById('savingsFinancingDetails').style.display = showTotalFinancing ? 'block' : 'none';
+        
+        if (showTotalFinancing) {
+            // Set financing cost in savings box
+            safeSetText('totalFinancingCostInSavings', formatCurrency(totalInterest));
+            
+            // Calculate net savings and percentage/monthly (use dynamic totalCurrentCosts from above)
+            
+            if (hasFinancing && hasPriceIncrease) {
+                // BOTH ACTIVE: Show baseline net savings, scenario with both
+                const baselineNetSavings = totalResultsNoFinancing.initialGrossSavings - totalInterest;
+                safeSetText('totalNetSavingsInBox', formatCurrency(baselineNetSavings));
+                
+                // Calculate percentage and monthly for baseline net savings
+                const netSavingsPercent = totalCurrentCosts > 0 ? ((baselineNetSavings / totalCurrentCosts) * 100) : 0;
+                const netSavingsMonthly = baselineNetSavings / 12;
+                safeSetText('totalNetSavingsPercent', formatPercent(netSavingsPercent));
+                safeSetText('totalNetSavingsMonthly', formatCurrency(netSavingsMonthly));
+                
+                // Scenario: Net savings with financing and price increases
+                const ev = calcEV();
+                const hp = calcHP();
+                let oldCostsWithIncrease = state.currentElectricityTotal || 0;
+                if (hasEv) oldCostsWithIncrease += ev.fossilCost * (1 + state.vehicleIncrease / 100);
+                if (hasHp) oldCostsWithIncrease += hp.fossilCost * (1 + state.heatingIncrease / 100);
+                const newGrossSavingsWithIncrease = oldCostsWithIncrease - (state.energyCostWithHB || 0);
+                const newNetSavingsWithIncrease = newGrossSavingsWithIncrease - totalInterest;
+                
+                safeSetText('totalNetSavingsScenarioValueInBox', formatCurrency(newNetSavingsWithIncrease));
+                document.getElementById('totalNetSavingsScenarioDisplayInBox').style.display = 'inline-flex';
+                
+                // Also update old elements for compatibility
+                safeSetText('totalNetSavings', formatCurrency(totalResultsNoFinancing.initialGrossSavings));
+                safeSetText('totalNetSavingsScenarioValue', formatCurrency(newNetSavingsWithIncrease));
+            } else if (hasPriceIncrease) {
+                // ONLY PRICE INCREASES: Show net savings with baseline and increased scenario
+                const baselineNetSavings = totalNetSavingsBaseline;
+                safeSetText('totalNetSavingsInBox', formatCurrency(baselineNetSavings));
+                
+                // Calculate percentage and monthly for baseline net savings
+                const netSavingsPercent = totalCurrentCosts > 0 ? ((baselineNetSavings / totalCurrentCosts) * 100) : 0;
+                const netSavingsMonthly = baselineNetSavings / 12;
+                safeSetText('totalNetSavingsPercent', formatPercent(netSavingsPercent));
+                safeSetText('totalNetSavingsMonthly', formatCurrency(netSavingsMonthly));
+                
+                const ev = calcEV();
+                const hp = calcHP();
+                let oldCostsWithIncrease = state.currentElectricityTotal || 0;
+                if (hasEv) oldCostsWithIncrease += ev.fossilCost * (1 + state.vehicleIncrease / 100);
+                if (hasHp) oldCostsWithIncrease += hp.fossilCost * (1 + state.heatingIncrease / 100);
+                const newGrossSavingsWithIncrease = oldCostsWithIncrease - (state.energyCostWithHB || 0);
+                const newNetSavingsWithIncrease = newGrossSavingsWithIncrease - totalInterest;
+                
+                safeSetText('totalNetSavingsScenarioValueInBox', formatCurrency(newNetSavingsWithIncrease));
+                document.getElementById('totalNetSavingsScenarioDisplayInBox').style.display = 'inline-flex';
+                
+                // Also update old elements
+                safeSetText('totalNetSavings', formatCurrency(totalNetSavingsBaseline));
+                safeSetText('totalNetSavingsScenarioValue', formatCurrency(newNetSavingsWithIncrease));
+            } else {
+                // ONLY FINANCING: Just show baseline net savings, no scenario
+                const baselineNetSavings = totalNetSavingsBaseline;
+                safeSetText('totalNetSavingsInBox', formatCurrency(baselineNetSavings));
+                
+                // Calculate percentage and monthly for baseline net savings
+                const netSavingsPercent = totalCurrentCosts > 0 ? ((baselineNetSavings / totalCurrentCosts) * 100) : 0;
+                const netSavingsMonthly = baselineNetSavings / 12;
+                safeSetText('totalNetSavingsPercent', formatPercent(netSavingsPercent));
+                safeSetText('totalNetSavingsMonthly', formatCurrency(netSavingsMonthly));
+                
+                document.getElementById('totalNetSavingsScenarioDisplayInBox').style.display = 'none';
+                
+                // Also update old element
+                safeSetText('totalNetSavings', formatCurrency(totalNetSavingsBaseline));
+            }
+        }
+        
+        // === Monthly Cash Flow Breakdown ===
+        const showMonthlyCashFlow = totalCurrentCosts > 0 && (state.energyCostWithHB >= 0);
+        document.getElementById('monthlyCashFlowSection').style.display = showMonthlyCashFlow ? 'block' : 'none';
+        
+        if (showMonthlyCashFlow) {
+            // Calculate monthly values
+            const monthlyOldCosts = totalCurrentCosts / 12;
+            const monthlyNewCosts = (state.energyCostWithHB || 0) / 12;
+            const monthlySavingsAmount = (totalCurrentCosts - (state.energyCostWithHB || 0)) / 12;
+            
+            // Update basic monthly costs
+            safeSetText('monthlyOldCosts', formatCurrency(monthlyOldCosts) + '/Monat');
+            safeSetText('monthlyNewCosts', formatCurrency(monthlyNewCosts) + '/Monat');
+            safeSetText('monthlySavings', formatCurrency(monthlySavingsAmount) + '/Monat');
+            
+            // Handle financing rate if active
+            const showMonthlyFinancing = state.includeFinancing && totalInterest > 0;
+            document.getElementById('monthlyFinancingRow').style.display = showMonthlyFinancing ? 'block' : 'none';
+            
+            // Always show explanation when section is visible
+            const explanationEl = document.getElementById('monthlyFlowExplanation');
+            explanationEl.style.display = 'block';
+            const messageEl = document.getElementById('monthlyFlowMessage');
+            
+            if (showMonthlyFinancing) {
+                // Calculate full monthly financing rate (principal + interest)
+                const p = totalFinanced;
+                const r = state.interestRate / 100 / 12;
+                const n = state.termMonths;
+                
+                let monthlyFinancingRate = 0;
+                if (p > 0 && n > 0) {
+                    if (r > 0) {
+                        // Annuity formula: M = P * (r * (1+r)^n) / ((1+r)^n - 1)
+                        monthlyFinancingRate = p * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                    } else {
+                        // No interest - simple division
+                        monthlyFinancingRate = p / n;
+                    }
+                }
+                
+                const monthlyNetAmount = monthlySavingsAmount - monthlyFinancingRate;
+                
+                safeSetText('monthlyFinancingRate', formatCurrency(monthlyFinancingRate) + '/Monat');
+                safeSetText('monthlyNetAmount', formatCurrency(Math.abs(monthlyNetAmount)) + '/Monat');
+                
+                // Calculate yearly savings for more tangible benefit
+                const yearlySavingsAfterFinancing = monthlySavingsAmount * 12;
+                
+                // Update label and message based on positive/negative net
+                const netLabel = document.getElementById('monthlyNetLabel');
+                const netAmountEl = document.getElementById('monthlyNetAmount');
+                
+                if (monthlyNetAmount >= 0) {
+                    netLabel.textContent = 'Ihr monatlicher Vorteil';
+                    netLabel.style.color = 'var(--success)';
+                    netAmountEl.style.color = 'var(--success)';
+                    
+                    if (monthlyNetAmount > 0) {
+                        messageEl.innerHTML = `Sie sparen bereits während der Finanzierung <strong style="color: var(--success);">${formatCurrency(monthlyNetAmount)}/Monat</strong>. ` +
+                            `Nach Ablauf der Finanzierung profitieren Sie von der vollen monatlichen Einsparung von ` +
+                            `<strong style="color: var(--success);">${formatCurrency(monthlySavingsAmount)}/Monat</strong> ` +
+                            `(das sind <strong>${formatCurrency(yearlySavingsAfterFinancing)}/Jahr</strong> für andere Dinge).`;
+                    } else {
+                        messageEl.innerHTML = `Ihre Ersparnis finanziert die Investition komplett. ` +
+                            `<strong style="color: var(--success);">Sie zahlen keinen Cent extra</strong>. ` +
+                            `Nach Ablauf der Finanzierung profitieren Sie von der vollen monatlichen Einsparung von ` +
+                            `<strong style="color: var(--success);">${formatCurrency(monthlySavingsAmount)}/Monat</strong> ` +
+                            `(über <strong>${formatCurrency(yearlySavingsAfterFinancing)}/Jahr</strong>).`;
+                    }
+                } else {
+                    netLabel.textContent = 'Monatlicher Eigenanteil';
+                    netLabel.style.color = 'var(--warning)';
+                    netAmountEl.style.color = 'var(--warning)';
+                    
+                    const eigenanteil = Math.abs(monthlyNetAmount);
+                    const coverage = (monthlySavingsAmount / monthlyFinancingRate) * 100;
+                    
+                    messageEl.innerHTML = `Die Ersparnis deckt <strong style="color: var(--success);">${formatPercent(coverage)}</strong> der Rate. ` +
+                        `Sie zahlen nur <strong style="color: var(--warning);">${formatCurrency(eigenanteil)}/Monat</strong> selbst. ` +
+                        `Nach Ablauf der Finanzierung profitieren Sie von der vollen monatlichen Einsparung von ` +
+                        `<strong style="color: var(--success);">${formatCurrency(monthlySavingsAmount)}/Monat</strong> ` +
+                        `(das sind <strong>${formatCurrency(yearlySavingsAfterFinancing)}/Jahr</strong> dauerhaft).`;
+                }
+            } else {
+                // No financing active - show simple but tangible savings message
+                const yearlySavings = monthlySavingsAmount * 12;
+                messageEl.innerHTML = `Sie sparen dauerhaft <strong style="color: var(--success);">${formatCurrency(monthlySavingsAmount)}/Monat</strong> ` +
+                    `(das sind <strong style="color: var(--success);">${formatCurrency(yearlySavings)}/Jahr</strong> für andere Dinge).`;
+            }
+        }
+        
+        const chartTitle = (finalResultsForChart.years > 0 && isFinite(finalResultsForChart.years)) 
+            ? `Investition nach ${formatYears(finalResultsForChart.years)} wieder eingespielt (Amortisiert)` 
+            : 'Investition eingespielt';
+        safeSetText('chartTitle', chartTitle);
+        updateChart(finalResultsForChart.chartData, totalInvestment, finalResultsForChart.years);
+    }
+    
+    document.getElementById('resultSection').style.display = showTotalBox ? 'block' : 'none';
+};
+
+const updateChart = (data, totalCost, yearsToPayback) => {
+    const canvas = document.getElementById('chart');
+    if (!canvas || !data || data.length === 0) return;
+    const ctx = canvas.getContext('2d');
+    
+    const years = data.map(d => d.year);
+    const cumulativeSavings = data.map(d => d.cumulativeSavings);
+    
+    // Math.ceil() damit Farbwechsel NACH dem Break-Even passiert
+    // Bei Break-Even 7.7 Jahre: Ceil = 8 (Blau bis Jahr 7, Grün ab Jahr 7 mit Verbindung)
+    const paybackIndex = (yearsToPayback > 0 && isFinite(yearsToPayback)) ? Math.ceil(yearsToPayback) : -1;
+    
+    // Vor Break-Even: Werte bis kurz vor paybackIndex
+    const savingsBeforePayback = cumulativeSavings.map((val, i) => i < paybackIndex ? val : null);
+    
+    // Nach Break-Even: Werte ab paybackIndex-1 (für Verbindung!)
+    // Der letzte blaue Punkt ist auch der erste grüne Punkt
+    const savingsAfterPayback = cumulativeSavings.map((val, i) => i >= paybackIndex - 1 ? val : null);
+    
+    const beforeGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    beforeGradient.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+    beforeGradient.addColorStop(1, 'rgba(56, 189, 248, 0.05)');
+    
+    const afterGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    afterGradient.addColorStop(0, 'rgba(74, 222, 128, 0.4)');
+    afterGradient.addColorStop(1, 'rgba(74, 222, 128, 0.05)');
+    
+    const annotation = (paybackIndex !== -1 && isFinite(yearsToPayback)) ? {
+        line1: {
+            type: 'line', 
+            xMin: yearsToPayback, 
+            xMax: yearsToPayback,
+            borderColor: '#fbbf24', // Gold
+            borderWidth: 2, 
+            borderDash: [6, 6],
+            label: { 
+                content: `${formatYears(yearsToPayback)}`, 
+                position: 'start', 
+                backgroundColor: 'rgba(251, 191, 36, 0.2)', // Gold
+                color: '#fbbf24', // Gold
+                font: { weight: 'bold', size: 11 }, 
+                padding: { top: 4, bottom: 4, left: 8, right: 8 }, 
+                borderRadius: 6, 
+                yAdjust: -15 
+            }
+        }
+    } : {};
+    
+    if (chart) chart.destroy();
+    
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: years,
+            datasets: [
+                { 
+                    label: 'Einsparungen', 
+                    data: savingsBeforePayback, 
+                    borderColor: '#38bdf8', 
+                    backgroundColor: beforeGradient, 
+                    fill: true, 
+                    tension: 0.4, 
+                    borderWidth: window.innerWidth < 480 ? 2 : 3, 
+                    pointBackgroundColor: '#38bdf8', 
+                    pointBorderColor: '#000', 
+                    pointBorderWidth: window.innerWidth < 480 ? 1 : 2,
+                    pointRadius: window.innerWidth < 480 ? 2 : 4,
+                    pointHoverRadius: window.innerWidth < 480 ? 4 : 6
+                },
+                { 
+                    label: 'Gewinn', 
+                    data: savingsAfterPayback, 
+                    borderColor: '#30d158', 
+                    backgroundColor: afterGradient, 
+                    fill: true, 
+                    tension: 0.4, 
+                    borderWidth: window.innerWidth < 480 ? 2 : 3, 
+                    pointBackgroundColor: '#30d158', 
+                    pointBorderColor: '#000', 
+                    pointBorderWidth: window.innerWidth < 480 ? 1 : 2,
+                    pointRadius: window.innerWidth < 480 ? 2 : 4,
+                    pointHoverRadius: window.innerWidth < 480 ? 4 : 6
+                },
+                { 
+                    label: 'Investitionssumme', 
+                    data: Array(years.length).fill(totalCost), 
+                    borderColor: '#ff2d92', 
+                    borderDash: [10, 5], 
+                    fill: false, 
+                    pointRadius: 0, 
+                    borderWidth: window.innerWidth < 480 ? 1.5 : 2
+                },
+                // Break-Even Linie in Legende (ohne Jahr in Klammern)
+                {
+                    label: 'Break-Even',
+                    data: [], // Keine echten Daten, nur für Legende
+                    borderColor: '#fbbf24', // Gold
+                    borderDash: [6, 6],
+                    borderWidth: window.innerWidth < 480 ? 1.5 : 2,
+                    pointRadius: 0,
+                    fill: false,
+                    order: 999 // Ganz hinten in der Reihenfolge
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: { 
+                    display: true, 
+                    position: 'top',
+                    align: 'center',
+                    labels: { 
+                        font: { 
+                            size: window.innerWidth < 360 ? 7 : (window.innerWidth < 480 ? 8 : (window.innerWidth < 768 ? 10 : 12)), 
+                            weight: '600', 
+                            family: 'Inter' 
+                        }, 
+                        padding: window.innerWidth < 360 ? 2 : (window.innerWidth < 480 ? 3 : (window.innerWidth < 768 ? 6 : 15)),
+                        boxWidth: window.innerWidth < 480 ? 6 : 10,
+                        boxHeight: window.innerWidth < 480 ? 6 : 10,
+                        usePointStyle: true, // TRUE für Kreise in Legende
+                        color: '#a1a1aa',
+                        filter: (item) => {
+                            // Only show break-even if it exists
+                            if (item.text === 'Break-Even') {
+                                return paybackIndex !== -1 && isFinite(yearsToPayback);
+                            }
+                            // Show all other items
+                            return true;
+                        },
+                        // Shorten labels on mobile to prevent wrapping
+                        generateLabels: function(chart) {
+                            const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                            if (window.innerWidth < 768) {
+                                return original.map(label => {
+                                    // Shorten all labels on mobile for single line
+                                    if (label.text === 'Einsparungen') label.text = window.innerWidth < 360 ? 'Erspar.' : 'Ersparnis';
+                                    if (label.text === 'Investitionssumme') label.text = window.innerWidth < 360 ? 'Inv.' : 'Invest.';
+                                    if (label.text === 'Break-Even') label.text = window.innerWidth < 360 ? 'B-Even' : 'Break-Even';
+                                    return label;
+                                });
+                            }
+                            return original;
+                        }
+                    },
+                    maxWidth: window.innerWidth - 40,
+                    maxHeight: 50 // Reduced to force single line
+                },
+                tooltip: { 
+                    backgroundColor: 'rgba(20, 20, 31, 0.95)', 
+                    padding: 12, 
+                    titleColor: '#ffffff', 
+                    bodyColor: '#a1a1aa', 
+                    borderColor: 'rgba(255, 45, 146, 0.3)', 
+                    borderWidth: 1,
+                    callbacks: { 
+                        title: (context) => `Jahr ${context[0].label}`, 
+                        label: (c) => {
+                            return c.dataset.label === 'Investitionssumme' ? 
+                                ` Investition: ${formatCurrency(c.parsed.y)}` : 
+                                ` Kumulativ: ${formatCurrency(c.parsed.y)}`;
+                        }
+                    } 
+                },
+                annotation: { annotations: annotation }
+            },
+            scales: {
+                x: { 
+                    title: { 
+                        display: true, 
+                        text: 'Jahr', 
+                        font: { 
+                            size: window.innerWidth < 480 ? 11 : (window.innerWidth < 768 ? 12 : 14), 
+                            weight: '600' 
+                        }, 
+                        color: '#a1a1aa',
+                        padding: { top: window.innerWidth < 480 ? 6 : 10 }
+                    }, 
+                    grid: { display: false }, 
+                    ticks: { 
+                        color: '#71717a',
+                        font: { size: window.innerWidth < 480 ? 9 : (window.innerWidth < 768 ? 10 : 12) }
+                    } 
+                },
+                y: { 
+                    title: { 
+                        display: true, 
+                        text: 'Betrag (€)', 
+                        font: { 
+                            size: window.innerWidth < 480 ? 11 : (window.innerWidth < 768 ? 12 : 14), 
+                            weight: '600' 
+                        }, 
+                        color: '#a1a1aa' 
+                    }, 
+                    ticks: { 
+                        callback: v => formatCurrency(v), 
+                        color: '#71717a',
+                        font: { size: window.innerWidth < 480 ? 9 : (window.innerWidth < 768 ? 10 : 11) }
+                    }, 
+                    grid: { 
+                        color: 'rgba(255, 255, 255, 0.05)' 
+                    } 
+                }
+            }
+        }
+    });
+};
+
+function toggleExpand(section) {
+    const header = event.currentTarget;
+    const content = document.getElementById(section + '-content');
+    header.classList.toggle('open');
+    content.classList.toggle('open');
+}
+
+function toggleFinance(type) {
+    if (type === 'pv') {
+        state.financePv = !state.financePv;
+        document.getElementById('financePvBtn').classList.toggle('active', state.financePv);
+    } else {
+        state.financeHp = !state.financeHp;
+        document.getElementById('financeHpBtn').classList.toggle('active', state.financeHp);
+    }
+    state.isLoanAmountManual = false;
+    updateUI();
+}
+
+function selectTerm(months) {
+    state.termMonths = months;
+    document.querySelectorAll('#financing-content .btn-group .btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    updateUI();
+}
+
+function selectFuel(type) {
+    state.fuelType = type;
+    document.getElementById('petrolLabel').classList.toggle('checked', type === 'petrol');
+    document.getElementById('dieselLabel').classList.toggle('checked', type === 'diesel');
+    updateUI();
+}
+
+function selectHeatSource(type) {
+    state.heatSource = type;
+    document.getElementById('gasLabel').classList.toggle('checked', type === 'gas');
+    document.getElementById('oilLabel').classList.toggle('checked', type === 'oil');
+    state.isHpManual = false;
+    updateUI();
+}
+
+function toggleIncludeFinancing() {
+    state.includeFinancing = !state.includeFinancing;
+    document.getElementById('includeFinancingToggle').classList.toggle('active');
+    updateUI();
+}
+
+function toggleTotalCurrentCostsBreakdown() {
+    const breakdown = document.getElementById('totalCurrentCostsBreakdown');
+    const icon = document.getElementById('totalCurrentCostsExpandIcon');
+    const isOpen = breakdown.style.display !== 'none';
+    breakdown.style.display = isOpen ? 'none' : 'block';
+    icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function toggleMonthlyCashFlow() {
+    const content = document.getElementById('monthlyCashFlowContent');
+    const icon = document.getElementById('monthlyCashFlowExpandIcon');
+    const isOpen = content.style.display !== 'none';
+    content.style.display = isOpen ? 'none' : 'block';
+    icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function resetApp() {
+    Object.keys(state).forEach(key => {
+        if (typeof state[key] === 'number') state[key] = 0;
+        else if (typeof state[key] === 'boolean') state[key] = false;
+    });
+    state.fuelType = 'petrol'; state.heatSource = 'gas';
+    state.termMonths = 180; state.interestRate = 4.00; state.financePv = true; state.financeHp = true;
+    
+    document.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+    document.getElementById('interestRate').value = '4,00 %';
+    document.getElementById('loanAmount').value = 0;
+    document.getElementById('vehicleIncrease').value = 0;
+    document.getElementById('heatingIncrease').value = 0;
+    safeSetText('vehicleIncreaseDisplay', '0,0 %');
+    safeSetText('heatingIncreaseDisplay', '0,0 %');
+    
+    document.querySelectorAll('.btn.active').forEach(b => b.classList.remove('active'));
+    document.getElementById('term180').classList.add('active');
+    document.getElementById('financePvBtn').classList.add('active');
+    document.getElementById('financeHpBtn').classList.add('active');
+    
+    document.querySelectorAll('.toggle-switch.active').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.expandable-header.open').forEach(h => {
+        h.classList.remove('open');
+        h.nextElementSibling.classList.remove('open');
+    });
+    
+    document.getElementById('petrolLabel').classList.add('checked');
+    document.getElementById('dieselLabel').classList.remove('checked');
+    document.getElementById('gasLabel').classList.add('checked');
+    document.getElementById('oilLabel').classList.remove('checked');
+    
+    updateUI();
+}
+
+function saveCalculation() {
+    const name = document.getElementById('calcName').value.trim();
+    if (!name) { showErrorModal('Bitte geben Sie einen Namen ein.'); return; }
+    
+    const totalInvestment = state.pvCost + state.heatPumpCost;
+    const result = calcAmortization({
+        investmentCost: totalInvestment, 
+        annualFinancingCost: 0, 
+        usePV: state.pvCost > 0,
+        useEMobility: state.mileage > 0, 
+        useHP: state.gasConsumption > 0 || state.oilConsumption > 0
+    });
+    
+    saved.push({ id: Date.now(), name, date: new Date().toLocaleDateString('de-DE'), state: {...state}, 
+        result: { investment: totalInvestment, years: result.years, returnRate: totalInvestment > 0 ? (result.initialNetSavings / totalInvestment) * 100 : 0 } });
+    
+    // Save to localStorage - permanently stored until manually deleted by user
+    try {
+        localStorage.setItem('energyCalcSaved', JSON.stringify(saved));
+    } catch (e) {
+        console.error('LocalStorage save failed:', e);
+        showErrorModal('Speichern fehlgeschlagen. Möglicherweise ist der Speicher voll.');
+        saved.pop(); // Remove last item if save failed
+        return;
+    }
+    renderSaved();
+    document.getElementById('calcName').value = '';
+}
+
+function renderSaved() {
+    const list = document.getElementById('savedList');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (saved.length === 0) { list.innerHTML = ''; emptyState.style.display = 'block'; return; }
+    
+    emptyState.style.display = 'none';
+    list.innerHTML = saved.map(s => `
+        <div class="saved-item">
+            <div>
+                <div class="saved-item-name">${s.name}</div>
+                <div class="saved-item-date">Gespeichert am ${s.date} • ${formatYears(s.result.years)} • ${formatPercent(s.result.returnRate)} Rendite</div>
+            </div>
+            <div class="saved-item-actions">
+                <button class="saved-item-btn pdf" disabled style="opacity: 0.5; cursor: not-allowed;">✕ PDF</button>
+                <button class="saved-item-btn share" disabled style="opacity: 0.5; cursor: not-allowed;">✕ Teilen</button>
+                <button class="saved-item-btn load" onclick="loadCalc(${s.id})">Laden</button>
+                <button class="saved-item-btn delete" onclick="showDeleteModal(${s.id})">Löschen</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.loadCalc = (id) => {
+    const calc = saved.find(s => s.id === id);
+    if (!calc) return;
+    
+    Object.assign(state, calc.state);
+    
+    document.getElementById('pvCost').value = state.pvCost ? `${formatNumber(state.pvCost)} €` : '';
+    document.getElementById('heatPumpCost').value = state.heatPumpCost ? `${formatNumber(state.heatPumpCost)} €` : '';
+    document.getElementById('energyCostWithHB').value = state.energyCostWithHB ? `${formatNumber(state.energyCostWithHB)} €` : '';
+    document.getElementById('currentElectricityCost').value = state.currentElectricityCost ? `${formatNumber(state.currentElectricityCost, 1)} ct/kWh` : '';
+    document.getElementById('householdElectricityUsage').value = state.householdElectricityUsage ? `${formatNumber(state.householdElectricityUsage)} kWh` : '';
+    document.getElementById('mileage').value = state.mileage ? `${formatNumber(state.mileage)} km` : '';
+    document.getElementById('gasConsumption').value = state.gasConsumption ? `${formatNumber(state.gasConsumption)} m³` : '';
+    document.getElementById('oilConsumption').value = state.oilConsumption ? `${formatNumber(state.oilConsumption)} Liter` : '';
+    document.getElementById('interestRate').value = `${formatNumber(state.interestRate, 2)} %`;
+    document.getElementById('vehicleIncrease').value = state.vehicleIncrease;
+    document.getElementById('heatingIncrease').value = state.heatingIncrease;
+    safeSetText('vehicleIncreaseDisplay', formatPercent(state.vehicleIncrease));
+    safeSetText('heatingIncreaseDisplay', formatPercent(state.heatingIncrease));
+    
+    document.getElementById('financePvBtn').classList.toggle('active', state.financePv);
+    document.getElementById('financeHpBtn').classList.toggle('active', state.financeHp);
+    document.getElementById('includeFinancingToggle').classList.toggle('active', state.includeFinancing);
+    
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.showDeleteModal = (id) => { deleteId = id; document.getElementById('deleteModal').classList.add('show'); };
+window.closeDeleteModal = () => { document.getElementById('deleteModal').classList.remove('show'); deleteId = null; };
+window.confirmDelete = () => {
+    if (deleteId) {
+        saved = saved.filter(s => s.id !== deleteId);
+        try {
+            localStorage.setItem('energyCalcSaved', JSON.stringify(saved));
+        } catch (e) {
+            console.error('LocalStorage delete failed:', e);
+            showErrorModal('Löschen fehlgeschlagen. Bitte versuchen Sie es erneut.');
+            closeDeleteModal();
+            return;
+        }
+        renderSaved();
+    }
+    closeDeleteModal();
+};
+
+window.shareCalculation = (id) => {
+    const calc = saved.find(s => s.id === id);
+    if (!calc) return;
+    
+    const dataToShare = { name: calc.name, state: calc.state, result: calc.result };
+    const base64String = btoa(unescape(encodeURIComponent(JSON.stringify(dataToShare))));
+    const url = new URL(window.location.href);
+    url.search = `?data=${base64String}`;
+    
+    const textArea = document.createElement('textarea');
+    textArea.value = url.toString();
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showErrorModal('Link zur Berechnung kopiert!', 'Kopiert');
+    } catch (err) {
+        showErrorModal('Fehler beim Kopieren.', 'Fehler');
+    }
+    document.body.removeChild(textArea);
+};
+
+// PDF Generation function (simplified version)
+window.generatePDF = async (id) => {
+    const calc = saved.find(s => s.id === id);
+    if (!calc) { showErrorModal('Berechnung nicht gefunden.'); return; }
+    
+    if (typeof window.jspdf === 'undefined') {
+        showErrorModal('PDF-Bibliothek konnte nicht geladen werden.', 'Fehler');
+        return;
+    }
+    
+    document.getElementById('pdfLoading').classList.add('show');
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const margin = 15;
+        const contentWidth = pageWidth - (margin * 2);
+        
+        // Dark Purple & Gold color scheme
+        const primaryColor = [75, 40, 109];
+        const accentColor = [184, 134, 11];
+        const lightBg = [250, 250, 252];
+        const successColor = [34, 139, 34];
+        const textColor = [60, 60, 60];
+        
+        let currentY = 20;
+        
+        // ============================================================
+        // TITLE
+        // ============================================================
+        
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("Energie-Investitionsrechnung", margin, currentY);
+        currentY += 7;
+        
+        doc.setFontSize(9);
+        doc.setFont("Helvetica", "normal");
+        doc.setTextColor(120, 120, 120);
+        doc.text(`${calc.name} | ${new Date().toLocaleDateString('de-DE')}`, margin, currentY);
+        currentY += 10;
+        
+        // ============================================================
+        // MAIN RESULT BOX
+        // ============================================================
+        
+        const boxWidth = contentWidth;
+        const boxHeight = 70;
+        
+        // Background
+        doc.setFillColor(40, 40, 45);
+        doc.roundedRect(margin, currentY, boxWidth, boxHeight, 3, 3, 'F');
+        
+        // Border
+        doc.setDrawColor(80, 80, 85);
+        doc.setLineWidth(0.5);
+        doc.roundedRect(margin, currentY, boxWidth, boxHeight, 3, 3, 'S');
+        
+        let boxY = currentY + 8;
+        
+        // Main values side by side
+        const leftX = margin + 15;
+        const rightX = margin + boxWidth / 2 + 15;
+        
+        // Amortisationszeit
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(200, 200, 200);
+        doc.text("Amortisationszeit", leftX, boxY);
+        
+        boxY += 8;
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(24);
+        doc.setTextColor(255, 255, 255);
+        
+        if (calc.result.yearsScenario && calc.result.yearsScenario !== calc.result.years) {
+            // With scenario
+            doc.setTextColor(255, 255, 255);
+            doc.text(formatYears(calc.result.years), leftX, boxY);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(255, 180, 50);
+            doc.text("→", leftX + 45, boxY);
+            
+            doc.setFontSize(24);
+            doc.setTextColor(255, 180, 50);
+            doc.text(formatYears(calc.result.yearsScenario), leftX + 55, boxY);
+        } else {
+            doc.text(formatYears(calc.result.years), leftX, boxY);
+        }
+        
+        // Jährliche Rendite
+        boxY = currentY + 8;
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(200, 200, 200);
+        doc.text("Jährliche Rendite", rightX, boxY);
+        
+        boxY += 8;
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(24);
+        doc.setTextColor(100, 255, 100);
+        doc.text(formatPercent(calc.result.returnRate), rightX, boxY);
+        
+        // Savings box
+        boxY += 12;
+        const savingsBoxY = boxY;
+        const savingsBoxHeight = 35;
+        
+        doc.setFillColor(255, 45, 146);
+        doc.roundedRect(margin + 10, savingsBoxY, boxWidth - 20, savingsBoxHeight, 2, 2, 'F');
+        
+        boxY = savingsBoxY + 6;
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(255, 255, 255);
+        doc.text("IHRE JÄHRLICHE ERSPARNIS", leftX, boxY);
+        
+        boxY += 8;
+        const totalCurrentCosts = (calc.state.currentElectricityTotal || 0) + 
+                                  (calc.state.currentFuelCostTotal || 0) + 
+                                  (calc.state.currentHeatingCostTotal || 0);
+        const savings = totalCurrentCosts - (calc.state.energyCostWithHB || 0);
+        const savingsPercent = totalCurrentCosts > 0 ? (savings / totalCurrentCosts * 100) : 0;
+        
+        doc.setFontSize(20);
+        doc.text(formatCurrency(savings), leftX, boxY);
+        
+        boxY += 6;
+        doc.setFontSize(9);
+        doc.text(`Reduktion von ${formatPercent(savingsPercent)} oder ${formatCurrency(savings / 12)} pro Monat`, leftX, boxY);
+        
+        currentY += boxHeight + 8;
+        
+        // ============================================================
+        // INFO GRID - 2x2
+        // ============================================================
+        
+        const gridBoxWidth = (contentWidth - 5) / 2;
+        const gridBoxHeight = 38;
+        const gridGap = 5;
+        
+        // Helper function
+        const addGridBox = (title, x, y) => {
+            // Background
+            doc.setFillColor(lightBg[0], lightBg[1], lightBg[2]);
+            doc.roundedRect(x, y, gridBoxWidth, gridBoxHeight, 3, 3, 'F');
+            
+            // Border
+            doc.setDrawColor(220, 220, 220);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(x, y, gridBoxWidth, gridBoxHeight, 3, 3, 'S');
+            
+            // Header
+            doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.roundedRect(x, y, gridBoxWidth, 7, 3, 3, 'F');
+            doc.rect(x, y + 4, gridBoxWidth, 3, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(9);
+            doc.text(title, x + 3, y + 5);
+            
+            return y + 11;
+        };
+        
+        const addGridLine = (label, value, x, y, bold = false) => {
+            doc.setFont("Helvetica", bold ? "bold" : "normal");
+            doc.setFontSize(8);
+            doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+            doc.text(label, x + 3, y);
+            doc.text(String(value), x + gridBoxWidth - 3, y, { align: "right" });
+            return y + 4.5;
+        };
+        
+        // ROW 1: INVESTITION + ENERGIEKOSTEN
+        let leftBoxY = addGridBox("INVESTITION", margin, currentY);
+        let rightBoxY = addGridBox("ENERGIEKOSTEN", margin + gridBoxWidth + gridGap, currentY);
+        
+        // Investition content
+        if (calc.state.pvCost > 0) {
+            leftBoxY = addGridLine("Photovoltaik", formatCurrency(calc.state.pvCost), margin, leftBoxY);
+        }
+        if (calc.state.heatPumpCost > 0) {
+            leftBoxY = addGridLine("Heizsystem", formatCurrency(calc.state.heatPumpCost), margin, leftBoxY);
+        }
+        
+        const totalInvestment = calc.state.pvCost + calc.state.heatPumpCost;
+        if (calc.state.pvCost > 0 && calc.state.heatPumpCost > 0) {
+            leftBoxY += 1;
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.2);
+            doc.line(margin + 3, leftBoxY, margin + gridBoxWidth - 3, leftBoxY);
+            leftBoxY += 3;
+            leftBoxY = addGridLine("Gesamt", formatCurrency(totalInvestment), margin, leftBoxY, true);
+        }
+        
+        // Energiekosten content
+        rightBoxY = addGridLine("Aktuell p.a.", formatCurrency(totalCurrentCosts), margin + gridBoxWidth + gridGap, rightBoxY, true);
+        rightBoxY = addGridLine("Neu p.a.", formatCurrency(calc.state.energyCostWithHB || 0), margin + gridBoxWidth + gridGap, rightBoxY, true);
+        
+        rightBoxY += 1;
+        doc.setFillColor(240, 255, 240);
+        doc.roundedRect(margin + gridBoxWidth + gridGap + 3, rightBoxY - 2, gridBoxWidth - 6, 9, 2, 2, 'F');
+        
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(8);
+        doc.setTextColor(successColor[0], successColor[1], successColor[2]);
+        rightBoxY = addGridLine("Ersparnis", formatCurrency(savings), margin + gridBoxWidth + gridGap, rightBoxY, true);
+        rightBoxY = addGridLine(`${formatPercent(savingsPercent)}`, `${formatCurrency(savings / 12)}/M`, margin + gridBoxWidth + gridGap, rightBoxY);
+        
+        currentY += gridBoxHeight + gridGap;
+        
+        // ROW 2: FINANZIERUNG + PREISSTEIGERUNG (only if active)
+        let showFinancing = calc.state.includeFinancing && calc.state.loanAmount > 0;
+        let showPriceIncrease = calc.state.vehicleIncrease > 0 || calc.state.heatingIncrease > 0;
+        
+        if (showFinancing || showPriceIncrease) {
+            leftBoxY = showFinancing ? addGridBox("FINANZIERUNG", margin, currentY) : currentY + 11;
+            rightBoxY = showPriceIncrease ? addGridBox("PREISSTEIGERUNG", margin + gridBoxWidth + gridGap, currentY) : currentY + 11;
+            
+            if (showFinancing) {
+                leftBoxY = addGridLine("Summe", formatCurrency(calc.state.loanAmount), margin, leftBoxY);
+                leftBoxY = addGridLine("Zinssatz", `${formatNumber(calc.state.interestRate, 2)} %`, margin, leftBoxY);
+                leftBoxY = addGridLine("Laufzeit", `${calc.state.loanTerm} J`, margin, leftBoxY);
+                
+                const r = calc.state.interestRate / 100 / 12;
+                const t = calc.state.loanTerm * 12;
+                const p = calc.state.loanAmount;
+                const monthlyRate = p > 0 && t > 0 ? (r > 0 ? p * (r * Math.pow(1 + r, t)) / (Math.pow(1 + r, t) - 1) : p / t) : 0;
+                
+                leftBoxY += 1;
+                leftBoxY = addGridLine("Rate/Monat", formatCurrency(monthlyRate), margin, leftBoxY, true);
+            }
+            
+            if (showPriceIncrease) {
+                if (calc.state.vehicleIncrease > 0) {
+                    rightBoxY = addGridLine("Kraftstoff", `${formatNumber(calc.state.vehicleIncrease, 1)} % p.a.`, margin + gridBoxWidth + gridGap, rightBoxY);
+                }
+                if (calc.state.heatingIncrease > 0) {
+                    rightBoxY = addGridLine("Heizkosten", `${formatNumber(calc.state.heatingIncrease, 1)} % p.a.`, margin + gridBoxWidth + gridGap, rightBoxY);
+                }
+                
+                if (calc.result.yearsScenario && calc.result.yearsScenario !== calc.result.years) {
+                    rightBoxY += 1;
+                    doc.setFillColor(255, 250, 240);
+                    doc.roundedRect(margin + gridBoxWidth + gridGap + 3, rightBoxY - 2, gridBoxWidth - 6, 8, 2, 2, 'F');
+                    doc.setFont("Helvetica", "bold");
+                    doc.setFontSize(8);
+                    doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+                    rightBoxY = addGridLine("Mit Steigerung", formatYears(calc.result.yearsScenario), margin + gridBoxWidth + gridGap, rightBoxY, true);
+                }
+            }
+        }
+        
+        // ============================================================
+        // FOOTER
+        // ============================================================
+        
+        doc.setFontSize(7);
+        doc.setTextColor(180, 180, 180);
+        doc.text(`Erstellt am ${new Date().toLocaleDateString('de-DE')} um ${new Date().toLocaleTimeString('de-DE')}`, pageWidth / 2, pageHeight - 8, { align: "center" });
+        
+        doc.save(`Energie-Investitionsrechnung-${calc.name}.pdf`);
+        
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        showErrorModal('Fehler bei der PDF-Erstellung: ' + error.message, 'Fehler');
+    } finally {
+        document.getElementById('pdfLoading').classList.remove('show');
+    }
+};
+
+function randomFill() {
+    const rand = (min, max, step = 1) => min + Math.floor(Math.random() * ((max - min) / step + 1)) * step;
+    
+    state.pvCost = rand(15000, 35000, 1000);
+    state.heatPumpCost = rand(15000, 30000, 1000);
+    state.energyCostWithHB = rand(200, 800, 50);
+    state.currentElectricityCost = rand(30, 45, 1);
+    state.householdElectricityUsage = rand(3000, 6000, 500);
+    state.mileage = rand(10000, 25000, 1000);
+    state.gasConsumption = rand(1000, 2500, 100);
+    state.oilConsumption = 0;
+    
+    document.getElementById('pvCost').value = `${formatNumber(state.pvCost)} €`;
+    document.getElementById('heatPumpCost').value = `${formatNumber(state.heatPumpCost)} €`;
+    document.getElementById('energyCostWithHB').value = `${formatNumber(state.energyCostWithHB)} €`;
+    document.getElementById('currentElectricityCost').value = `${formatNumber(state.currentElectricityCost, 1)} ct/kWh`;
+    document.getElementById('householdElectricityUsage').value = `${formatNumber(state.householdElectricityUsage)} kWh`;
+    document.getElementById('mileage').value = `${formatNumber(state.mileage)} km`;
+    document.getElementById('gasConsumption').value = `${formatNumber(state.gasConsumption)} m³`;
+    document.getElementById('oilConsumption').value = '';
+    
+    updateUI();
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Check for shared data in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataParam = urlParams.get('data');
+    
+    if (dataParam) {
+        try {
+            const sharedData = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
+            Object.assign(state, sharedData.state);
+            
+            document.getElementById('pvCost').value = state.pvCost ? `${formatNumber(state.pvCost)} €` : '';
+            document.getElementById('heatPumpCost').value = state.heatPumpCost ? `${formatNumber(state.heatPumpCost)} €` : '';
+            document.getElementById('energyCostWithHB').value = state.energyCostWithHB ? `${formatNumber(state.energyCostWithHB)} €` : '';
+            document.getElementById('currentElectricityCost').value = state.currentElectricityCost ? `${formatNumber(state.currentElectricityCost, 1)} ct/kWh` : '';
+            document.getElementById('householdElectricityUsage').value = state.householdElectricityUsage ? `${formatNumber(state.householdElectricityUsage)} kWh` : '';
+            document.getElementById('mileage').value = state.mileage ? `${formatNumber(state.mileage)} km` : '';
+            document.getElementById('gasConsumption').value = state.gasConsumption ? `${formatNumber(state.gasConsumption)} m³` : '';
+            document.getElementById('oilConsumption').value = state.oilConsumption ? `${formatNumber(state.oilConsumption)} Liter` : '';
+            document.getElementById('interestRate').value = `${formatNumber(state.interestRate, 2)} %`;
+            
+            // Enter read-only mode
+            document.querySelectorAll('input').forEach(input => input.disabled = true);
+            document.querySelectorAll('button').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; });
+            document.querySelectorAll('.toggle-switch, .radio-label').forEach(el => { el.style.pointerEvents = 'none'; el.style.opacity = '0.5'; });
+            document.getElementById('saveSection').style.display = 'none';
+            document.getElementById('bottomResetBtn').style.display = 'none';
+            document.getElementById('randomFillBtn').style.display = 'none';
+            document.getElementById('resetHeaderBtn').style.display = 'none';
+            document.getElementById('readOnlyNotice').style.display = 'block';
+            safeSetText('mainTitle', `Berechnung: ${sharedData.name}`);
+            
+            updateUI();
+        } catch (e) {
+            console.error('Error loading shared data:', e);
+        }
+    }
+    
+    const inputs = {
+        pvCost: { unit: '€', decimals: 0 },
+        heatPumpCost: { unit: '€', decimals: 0 },
+        energyCostWithHB: { unit: '€', decimals: 0 },
+        currentElectricityCost: { unit: 'ct/kWh', decimals: 1 },
+        householdElectricityUsage: { unit: 'kWh', decimals: 0 },
+        mileage: { unit: 'km', decimals: 0 },
+        evKwhConsumption: { unit: 'kWh', decimals: 0 },
+        gasConsumption: { unit: 'm³', decimals: 0 },
+        oilConsumption: { unit: 'Liter', decimals: 0 },
+        hpKwhConsumption: { unit: 'kWh', decimals: 0 }
+    };
+    
+    Object.entries(inputs).forEach(([id, config]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        
+        el.addEventListener('focus', e => {
+            e.target.select();
+            // Store original value
+            e.target.dataset.originalValue = e.target.value;
+        });
+        
+        el.addEventListener('input', e => {
+            const value = parseNum(e.target.value);
+            state[id] = value;
+            
+            if (id === 'mileage') state.isEvManual = false;
+            if (id === 'mileage') state.isFuelCostManual = false;
+            if (id === 'evKwhConsumption') state.isEvManual = true;
+            if (id === 'gasConsumption' || id === 'oilConsumption') state.isHpManual = false;
+            if (id === 'gasConsumption' || id === 'oilConsumption') state.isHeatingCostManual = false;
+            if (id === 'hpKwhConsumption') state.isHpManual = true;
+            if (id === 'pvCost' || id === 'heatPumpCost') state.isLoanAmountManual = false;
+            
+            updateUI();
+        });
+        
+        el.addEventListener('blur', e => {
+            // Only format if value actually changed
+            if (e.target.value !== e.target.dataset.originalValue) {
+                const value = parseNum(e.target.value);
+                // Allow negative values - check if valid number instead of > 0
+                e.target.value = (value !== 0 || e.target.value.trim() !== '') ? `${formatNumber(value, config.decimals)} ${config.unit}` : '';
+            }
+            delete e.target.dataset.originalValue;
+        });
+    });
+    
+    document.getElementById('interestRate').addEventListener('focus', e => {
+        e.target.select();
+        e.target.dataset.originalValue = e.target.value;
+    });
+    
+    document.getElementById('interestRate').addEventListener('input', e => {
+        state.interestRate = parseNum(e.target.value);
+        updateUI();
+    });
+    
+    document.getElementById('interestRate').addEventListener('blur', e => {
+        if (e.target.value !== e.target.dataset.originalValue) {
+            e.target.value = `${formatNumber(state.interestRate, 2)} %`;
+        }
+        delete e.target.dataset.originalValue;
+    });
+    
+    document.getElementById('loanAmount').addEventListener('input', e => {
+        state.loanAmount = parseInt(e.target.value);
+        state.isLoanAmountManual = true;
+        safeSetText('loanAmountDisplay', formatCurrency(state.loanAmount));
+        updateUI();
+    });
+    
+    document.getElementById('vehicleIncrease').addEventListener('input', e => {
+        state.vehicleIncrease = parseFloat(e.target.value);
+        safeSetText('vehicleIncreaseDisplay', formatPercent(state.vehicleIncrease));
+        updateUI();
+    });
+    
+    document.getElementById('heatingIncrease').addEventListener('input', e => {
+        state.heatingIncrease = parseFloat(e.target.value);
+        safeSetText('heatingIncreaseDisplay', formatPercent(state.heatingIncrease));
+        updateUI();
+    });
+    
+    document.getElementById('gasConsumption').addEventListener('input', () => {
+        if (document.getElementById('gasConsumption').value.trim() !== '') {
+            document.getElementById('oilConsumption').value = '';
+            state.oilConsumption = 0;
+            selectHeatSource('gas');
+        }
+    });
+    
+    document.getElementById('oilConsumption').addEventListener('input', () => {
+        if (document.getElementById('oilConsumption').value.trim() !== '') {
+            document.getElementById('gasConsumption').value = '';
+            state.gasConsumption = 0;
+            selectHeatSource('oil');
+        }
+    });
+    
+    // Manual editing for fuel and heating costs
+    document.getElementById('currentElectricityTotal').addEventListener('focus', e => {
+        e.target.select();
+        e.target.dataset.originalValue = e.target.value;
+    });
+    
+    document.getElementById('currentElectricityTotal').addEventListener('input', e => {
+        state.currentElectricityTotal = parseNum(e.target.value);
+        state.isElectricityCostManual = true;
+        updateUI();
+    });
+    
+    document.getElementById('currentElectricityTotal').addEventListener('blur', e => {
+        if (e.target.value !== e.target.dataset.originalValue) {
+            const value = parseNum(e.target.value);
+            e.target.value = (value !== 0 || e.target.value.trim() !== '') ? `${formatNumber(value)} €` : '';
+        }
+        delete e.target.dataset.originalValue;
+    });
+    
+    document.getElementById('currentFuelCostTotal').addEventListener('focus', e => {
+        e.target.select();
+        e.target.dataset.originalValue = e.target.value;
+    });
+    
+    document.getElementById('currentFuelCostTotal').addEventListener('input', e => {
+        state.currentFuelCostTotal = parseNum(e.target.value);
+        state.isFuelCostManual = true;
+        updateUI();
+    });
+    
+    document.getElementById('currentFuelCostTotal').addEventListener('blur', e => {
+        if (e.target.value !== e.target.dataset.originalValue) {
+            const value = parseNum(e.target.value);
+            // Allow negative values - check if valid number instead of > 0
+            e.target.value = (value !== 0 || e.target.value.trim() !== '') ? `${formatNumber(value)} €` : '';
+        }
+        delete e.target.dataset.originalValue;
+    });
+    
+    document.getElementById('currentHeatingCostTotal').addEventListener('focus', e => {
+        e.target.select();
+        e.target.dataset.originalValue = e.target.value;
+    });
+    
+    document.getElementById('currentHeatingCostTotal').addEventListener('input', e => {
+        state.currentHeatingCostTotal = parseNum(e.target.value);
+        state.isHeatingCostManual = true;
+        updateUI();
+    });
+    
+    document.getElementById('currentHeatingCostTotal').addEventListener('blur', e => {
+        if (e.target.value !== e.target.dataset.originalValue) {
+            const value = parseNum(e.target.value);
+            // Allow negative values - check if valid number instead of > 0
+            e.target.value = (value !== 0 || e.target.value.trim() !== '') ? `${formatNumber(value)} €` : '';
+        }
+        delete e.target.dataset.originalValue;
+    });
+    
+    // Theme toggle function
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === '1k5' ? 'dark' : '1k5';
+        
+        html.setAttribute('data-theme', newTheme === '1k5' ? '1k5' : '');
+        localStorage.setItem('theme', newTheme);
+        
+        // Update icon and label
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        
+        if (newTheme === '1k5') {
+            // 1K5 icon (energy/bolt icon)
+            icon.innerHTML = '<path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>';
+            icon.setAttribute('fill', 'currentColor');
+            label.textContent = '1K5°';
+        } else {
+            // Dark mode icon (moon)
+            icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+            icon.setAttribute('fill', 'currentColor');
+            label.textContent = 'Dark';
+        }
+    }
+    
+    // Load saved theme on page load
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === '1k5') {
+        document.documentElement.setAttribute('data-theme', '1k5');
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        icon.innerHTML = '<path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>';
+        icon.setAttribute('fill', 'currentColor');
+        label.textContent = '1K5°';
+    }
+    // else default is dark mode with moon icon (already in HTML)
+    
+    
+    document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+    document.getElementById('randomFillBtn').addEventListener('click', randomFill);
+    document.getElementById('resetHeaderBtn').addEventListener('click', resetApp);
+    
+    renderSaved();
+    updateUI();
+});
+</script>
+</body>
+</html>
